@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+    <feed2>
+        <name>Feed 2</name>
+        <url>http://localhost/feed2</url>
+        <method>trim</method>
+    </feed2>
+</configdata>

@@ -1,0 +1,27 @@
+<div data-role="header">
+    <?php echo $this->headerButton($this->translate('Back'), $this->url('home'), 'arrow-l', \RssExtend\Helper\HeaderButton::LEFT,
+    array('data-rel' => 'back')); ?>
+    <h1><?php echo $this->translate($feed->getName()); ?></h1>
+</div>
+
+<?php $url = $serverUrl . $this->url('feed', array(
+                                                        'id' => $feed->getId(),
+                                                        'action' => 'rss'
+                                                   )); ?>
+<div data-role="content">
+    <div class="content-primary">
+        <div data-role="fieldcontain">
+            <label for="link"><?php echo $this->translate('Link'); ?></label>
+            <input type="text" name="link" id="link" value="<?php echo $url; ?>"/>
+        </div>
+
+        <a rel="external" href="<?php echo $url?>" data-role="button"><?php echo $this->translate(sprintf('Open URL %s', $url)); ?></a>
+        <a href="<?php echo $this->url('feed', array(
+                                                         'id' => $feed->getId(),
+                                                         'action' => 'preview'
+                                                    ))?>" data-role="button"><?php echo $this->translate(sprintf('Preview',
+            $url)); ?></a>
+        <a rel="external" href="http://www.google.com/ig/addtoreader?et=gEs490VY&source=ign_pLt&feedurl=<?php echo urlencode($url); ?>%26row%3D1%26sect%3D1"
+           data-role="button"><?php echo $this->translate('Add to Google Reader'); ?></a>
+    </div>
+</div>

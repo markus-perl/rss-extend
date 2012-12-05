@@ -1,0 +1,31 @@
+<?php $this->layout()->title = $this->translate('List of feeds avaiable'); ?>
+
+<div data-role="header">
+    <h1><?php echo $this->translate('RssExtend - List of available feeds'); ?></h1>
+</div>
+
+<div data-role="content">
+    <div class="content-primary">
+        <ul data-role="listview">
+            <?php $lastChar = ''; ?>
+
+            <?php foreach ($availableFeeds as $feed): ?>
+            <?php $firstChar = strtoupper(substr($feed->getName(), 0, 1)); ?>
+            <?php if ($firstChar !== $lastChar): ?>
+                <?php $lastChar = $firstChar; ?>
+                <li data-role="list-divider">
+                    <?php echo strtoupper($firstChar); ?>
+                </li>
+                <?php endif; ?>
+
+            <li>
+                <a href="<?php echo $this->url('feed', array(
+                                                            'id' => $feed->getId(),
+                                                            'action' => 'show'
+                                                       )); ?>"><?php echo $feed->getName(); ?></a>
+            </li>
+            <?php endforeach; ?>
+
+        </ul>
+    </div>
+</div>

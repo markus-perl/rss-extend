@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+    <feed1>
+        <name>Feed 1</name>
+        <url>http://localhost/feed1</url>
+        <method>dom</method>
+    </feed1>
+</configdata>

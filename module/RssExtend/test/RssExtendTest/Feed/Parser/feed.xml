@@ -1,0 +1,22 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/" version="2.0">
+    <channel>
+        <title>Testfeed</title>
+        <link>http://localhost/</link>
+        <description>some test items</description>
+        <image>
+            <title>item 1</title>
+            <url>http://localhost/image</url>
+            <link>http://localhost/</link>
+        </image>
+        <item>
+            <title>item 1</title>
+            <link>http://localhost/item1</link>
+            <description>description</description>
+            <pubDate>Tue, 04 Dec 2012 23:00:00 GMT</pubDate>
+            <author>Demouser</author>
+        </item>
+    </channel>
+</rss>
+

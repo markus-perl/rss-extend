@@ -1,0 +1,28 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <?php echo $this->headTitle('ZF2 ' . $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+
+    <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+
+    <?php echo $this->headLink(array(
+                                    'rel' => 'shortcut icon',
+                                    'type' => 'image/vnd.microsoft.icon',
+                                    'href' => $this->basePath() . '/images/favicon.ico'
+                               ))->prependStylesheet('http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css'); ?>
+
+    <?php echo $this->headScript()->prependFile('http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js')
+    ->prependFile($this->basePath() . '/js/jquery.min.js')
+    ?>
+
+</head>
+<body>
+<div data-role="page">
+    <?php echo $this->content; ?>
+</div>
+<!-- /container -->
+<?php echo $this->inlineScript() ?>
+</body>
+</html>
