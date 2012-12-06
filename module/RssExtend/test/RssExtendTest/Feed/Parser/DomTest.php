@@ -30,9 +30,30 @@ class DomTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('item 1', $item->getTitle());
     }
 
+    /**
+     * @expectedException \RssExtend\Feed\Parser\Exception\RuntimeException
+     */
+    public function testGetContent() {
+
+        $feedString = file_get_contents(__DIR__ . '/feed.xml');
+        $item1Html = file_get_contents(__DIR__ . '/item1.html');
+        $downloader = $this->getMock('Downloader', array('download'));
+        $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
+        $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
+
+
+        $config = new \Zend\Config\Config(array(
+                                          ));
+
+        $feed = new Feed();
+        $dom = new Dom($feed, $config);
+        $dom->setDownloader($downloader);
+
+        $result = $dom->getUpdatedFeed();
+    }
+
     public function testGetUpdatedFeed ()
     {
-
         $feedString = file_get_contents(__DIR__ . '/feed.xml');
         $item1Html = file_get_contents(__DIR__ . '/item1.html');
         $downloader = $this->getMock('Downloader', array('download'));
@@ -81,4 +102,6 @@ class DomTest extends \PHPUnit_Framework_TestCase
         $current = $result->current();
         $this->assertEquals('<p><img src="http://localhost.de/image.jpg" /></p><p>This is a test</p><p>This is another block</p>', $current->getContent());
     }
+
+
 }

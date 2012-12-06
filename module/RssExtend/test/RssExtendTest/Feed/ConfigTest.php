@@ -12,6 +12,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
                                      'name' => 'Feed 1',
                                      'url' => 'http://localhost/feed1',
                                      'method' => 'dom',
+                                     'postProcess' => array('staticImage' => 'http://localhost')
                                  ),
                                  'feed2' => array(
                                      'name' => 'Feed 2',

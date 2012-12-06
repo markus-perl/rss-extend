@@ -45,7 +45,7 @@ class Module
             'factories' => array(
                 'Zend\Cache\Storage\Adapter\Filesystem' => function ($sm) {
                     $cache = StorageFactory::adapterFactory('filesystem', array(
-                                                                               'cache_dir' => '/tmp'
+                                                                               'cache_dir' => __DIR__ . '/../../data/cache'
                                                                           ));
                     $plugin = StorageFactory::pluginFactory('exception_handler', array(
                                                                                       'throw_exceptions' => true,

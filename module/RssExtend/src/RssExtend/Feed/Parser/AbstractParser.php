@@ -55,13 +55,13 @@ abstract class AbstractParser
 
     /**
      * @param \RssExtend\Feed\Feed $feed
-     * @param \Zend\Config\Config $config
+     * @param Config $config
      */
     public function __construct (Feed $feed, Config $config = null)
     {
         $this->feed = $feed;
 
-        $this->config = new \Zend\Config\Config(array());
+        $this->config = new Config(array());
         if ($config) {
             $this->config = $config;
         }
@@ -87,6 +87,7 @@ abstract class AbstractParser
 
         $updatedFeed->setTitle($title = $origFeed->getTitle());
 
+        /* @var \Zend\Feed\Reader\Entry\Atom $origEntry */
         foreach ($origFeed as $origEntry) {
             $entry = $updatedFeed->createEntry();
 
@@ -101,7 +102,10 @@ abstract class AbstractParser
                 $getter = 'get' . ucfirst($attrib);
                 $setter = 'set' . ucfirst($attrib);
                 if ($origEntry->$getter() !== null) {
-                    $entry->$setter($origEntry->$getter());
+
+                    if ($origEntry->$getter()) {
+                        $entry->$setter($origEntry->$getter());
+                    }
                 }
 
             }

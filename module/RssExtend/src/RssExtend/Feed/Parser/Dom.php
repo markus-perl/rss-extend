@@ -12,8 +12,8 @@ class Dom extends AbstractParser
      */
     private function getUrl (\Zend\Feed\Reader\Entry\EntryInterface $entry)
     {
-        $url = $entry->getId();
-        $validator = new Uri();
+        $url = $entry->getContent();
+        $validator = new \Zend\Uri\Http();
         if ($url === null || $validator->isValid($url) === false) {
             $url = $entry->getLink();
         }
@@ -40,20 +40,22 @@ class Dom extends AbstractParser
         $dom = new \Zend\Dom\Query();
         $dom->setDocument($html, 'utf-8');
 
-        if ($this->config->xhtml) {
-            preg_match($this->config->dom->xhtml, $html, $body);
-            $body = array_shift($body);
+        if (null == $this->config->content) {
+            throw new Exception\RuntimeException('config content not set');
+        }
 
+        if ($this->config->xhtml)
+        {
+            preg_match("/<body.*\<\/body>/s", $html, $body);
             $content = '<?xml version="1.0" encoding="UTF-8" ?>
                 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml">
                 <html xmlns="http://www.w3.org/1999/xhtml">
                 <head><META http-equiv=Content-Type content="text/html; charset=UTF-8"></head>
-                <body>' . $body . '/body></html>';
-            $dom->setDocumentXhtml($content, 'utf-8');
+                ' . $body[0] . '</html>';
+            $dom->setDocumentXhtml( $content, 'utf-8' );
         }
 
         $results = $dom->execute($this->config->content);
-
 
         $content = '';
 
@@ -65,7 +67,6 @@ class Dom extends AbstractParser
         if ($content == '') {
             $content = $noContent;
         }
-
 
         return $content;
     }

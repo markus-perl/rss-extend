@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+chdir(dirname(__DIR__));
+ini_set('max_execution_time', 300);
+
+// Setup autoloading
+require 'init_autoloader.php';
+
+
+// Run the application!
+$application = Zend\Mvc\Application::init(require 'config/application.config.php');
+
+$collection = $application->getServiceManager()->get('RssExtend\Feed\Collection');
+
+foreach ($collection as $feed) {
+    /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
+    $cache = $application->getServiceManager()->get('Zend\Cache\Storage\Adapter\Filesystem');
+
+    $downloader = $feed->getParser()->getDownloader();
+    $downloader->setCache($cache);
+    $downloader->setSleep(1000000, 10000000); // 1 - 10 sec
+
+    $entries = $feed->getUpdatedFeed();
+    echo 'feed ' . $feed->getId() .' successfully updated.' . PHP_EOL;
+}
+
+exit(0);

@@ -73,12 +73,12 @@ class Collection implements \Iterator, \Countable
      */
     public function getById ($id)
     {
-        foreach ($this->data as $entry) {
+        foreach ($this as $entry) {
             if ($entry->getId() == $id) {
                 return $entry;
             }
-
-            return null;
         }
+
+        return null;
     }
 }

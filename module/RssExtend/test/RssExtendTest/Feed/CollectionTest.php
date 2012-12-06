@@ -30,8 +30,22 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
             $this->assertNotNull($feed->getName());
             $this->assertNotNull($feed->getId());
         }
-
     }
 
+    public function testgetById() {
+        $config = new Config(__DIR__ . '/testData');
+
+        $collection = new Collection($config);
+
+        $feed1 = $collection->getById('feed1');
+        $this->assertNotNull($feed1);
+        $this->assertEquals('feed1', $feed1->getId());
+
+        $feed2 = $collection->getById('feed2');
+        $this->assertNotNull($feed2);
+        $this->assertEquals('feed2', $feed2->getId());
+
+
+    }
 
 }

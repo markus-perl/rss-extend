@@ -5,6 +5,12 @@ use RssExtend\Feed\Parser\AbstractParser;
 
 class Feed
 {
+
+    /**
+     * @var \Zend\Config\Config
+     */
+    private $postProcess;
+
     /**
      * @var string
      */
@@ -142,6 +148,21 @@ class Feed
         return $this->parser;
     }
 
+    public function getUpdatedFeed ()
+    {
+        $feed = $this->getParser()->getUpdatedFeed();
+
+        foreach ($feed as $entry) {
+            foreach ($this->getPostProcessors() as $postProcessor) {
+                $postProcessor->process($entry);
+            }
+        }
+
+        $feed->rewind();
+
+        return $feed;
+    }
+
     /**
      * @param string $url
      */
@@ -192,8 +213,52 @@ class Feed
             throw new Exception\RuntimeException('method not set');
         }
 
+        if ($config->postProcess) {
+            $this->setPostProcess($config->postProcess);
+        }
+
         $method = $config->method;
         $this->setMethod($method, $config->$method);
     }
 
+
+    /**
+     * @param \Zend\Config\Config $postProcess
+     */
+    public function setPostProcess (\Zend\Config\Config $postProcess)
+    {
+        $this->postProcess = $postProcess;
+    }
+
+    /**
+     * @return \Zend\Config\Config
+     */
+    public function getPostProcess ()
+    {
+        return $this->postProcess;
+    }
+
+    /**
+     * @return array[]AbstractPostProcessor
+     * @throws Exception\RuntimeException
+     */
+    public function getPostProcessors ()
+    {
+        if (null === $this->getPostProcess()) {
+            return array();
+        }
+
+        $postProcessors = array();
+        foreach ($this->getPostProcess() as $name => $config) {
+            $postProcessorName = 'RssExtend\\Feed\\PostProcessor\\' . ucfirst($name);
+
+            if (false == class_exists($postProcessorName)) {
+                throw new Exception\RuntimeException('invalid post processor specified');
+            }
+
+            $postProcessors[] = new $postProcessorName($config, $this);
+        }
+
+        return $postProcessors;
+    }
 }

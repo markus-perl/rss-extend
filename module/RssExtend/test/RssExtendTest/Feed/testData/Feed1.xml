@@ -4,5 +4,8 @@
         <name>Feed 1</name>
         <url>http://localhost/feed1</url>
         <method>dom</method>
+        <postProcess>
+            <staticImage>http://localhost</staticImage>
+        </postProcess>
     </feed1>
 </configdata>

@@ -36,6 +36,7 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
                                  'name' => 'Feed 1',
                                  'url' => 'http://localhost/feed1',
                                  'method' => 'dom',
+                                 'postProcess' => array('staticImage' => 'http://localhost')
                             ), $config['feed1']);
 
         $this->assertEquals(array(
@@ -45,7 +46,8 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
                             ), $config['feed2']);
     }
 
-    public function testCollection() {
+    public function testCollection ()
+    {
         $sm = \RssExtendTest\Bootstrap::getServiceManager();
 
         /* @var Collection $downloader */
