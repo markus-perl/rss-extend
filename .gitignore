@@ -10,3 +10,4 @@ composer.lock
 vendor
 module/RssExtend/feeds/
 zfcache-*
+*.tar.gz

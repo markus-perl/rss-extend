@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Seniorbook" default="build" basedir=".">
+    <property name="source" value="."/>
+    <property environment="env"/>
+
+    <target name="build" depends="createArchive"/>
+
+    <target name="createArchive" depends="getVersion, phpunit">
+
+        <property name="folderName" value="rss-extend-${version}"/>
+        <property name="fileName" value="${folderName}.tar.gz"/>
+
+        <delete file="${source}/${fileName}"/>
+
+        <tar longfile="gnu" compression="gzip" destfile="${fileName}">
+            <tarfileset dir="${source}/config" prefix="/${folderName}/config">
+            </tarfileset>
+            <tarfileset dir="${source}/bin" filemode="555" prefix="/${folderName}/bin">
+                <include name="background-updater"/>
+            </tarfileset>
+            <tarfileset dir="${source}/data/cache" prefix="/${folderName}/data/cache">
+                <include name="EMPTY"/>
+            </tarfileset>
+            <tarfileset dir="${source}/module" prefix="/${folderName}/module">
+            </tarfileset>
+            <tarfileset dir="${source}/public" prefix="/${folderName}/public">
+            </tarfileset>
+            <tarfileset dir="${source}" prefix="/${folderName}">
+                <include name="init_autoloader.php"/>
+            </tarfileset>
+            <tarfileset dir="${source}/vendor" prefix="/${folderName}/vendor">
+                <include name="composer/**"/>
+                <include name="zendframework/zendframework/library/**"/>
+            </tarfileset>
+        </tar>
+
+    </target>
+
+    <target name="getVersion">
+        <exec executable="${source}/bin/version" outputproperty="version" failonerror="true"/>
+        <echo message="Building version: ${version}"/>
+    </target>
+
+    <target name="phpunit" description="Run unit tests using PHPUnit">
+        <exec executable="${source}/bin/phpunit" failonerror="true"/>
+    </target>
+</project>

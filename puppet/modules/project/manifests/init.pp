@@ -6,4 +6,5 @@ class project {
 	class { 'project::nginx': }
     class { 'project::bash': }
     class { 'project::composer': }
+    class { 'project::ant': }
 }

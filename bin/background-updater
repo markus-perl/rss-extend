@@ -2,12 +2,7 @@
 <?php
 chdir(dirname(__DIR__));
 ini_set('max_execution_time', 300);
-
-// Setup autoloading
 require 'init_autoloader.php';
-
-
-// Run the application!
 $application = Zend\Mvc\Application::init(require 'config/application.config.php');
 
 $collection = $application->getServiceManager()->get('RssExtend\Feed\Collection');
