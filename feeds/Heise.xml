@@ -12,6 +12,7 @@
             <staticImage>http://www.heise.de</staticImage>
             <mobilizer></mobilizer>
             <removeAttribs></removeAttribs>
+            <relativeLinks>http://www.heise.de</relativeLinks>
         </postProcess>
     </heise>
 </configdata>

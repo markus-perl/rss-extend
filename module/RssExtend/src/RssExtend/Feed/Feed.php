@@ -148,12 +148,14 @@ class Feed
         return $this->parser;
     }
 
+    /**
+     * @return \Zend\Feed\Writer\Feed
+     */
     public function getUpdatedFeed ()
     {
         $feed = $this->getParser()->getUpdatedFeed();
 
         $feed->setTitle($feed->getTitle() . ' - ' . \RssExtend\Version::NAME);
-
 
         foreach ($feed as $entry) {
             foreach ($this->getPostProcessors() as $postProcessor) {

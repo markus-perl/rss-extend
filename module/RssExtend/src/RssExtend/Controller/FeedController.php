@@ -15,6 +15,16 @@ use RssExtend\Feed;
 
 class FeedController extends AbstractActionController
 {
+
+    /**
+     * @return string
+     */
+    private function getServerUrl ()
+    {
+        $serverUrl = ((isset($_SERVER['HTTPS'])) ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
+        return $serverUrl;
+    }
+
     public function showAction ()
     {
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
@@ -29,7 +39,7 @@ class FeedController extends AbstractActionController
             return;
         }
 
-        $serverUrl = ((isset($_SERVER['HTTPS'])) ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
+        $serverUrl = $this->getServerUrl();
 
         return new ViewModel(array(
                                   'feed' => $feed,
@@ -55,13 +65,17 @@ class FeedController extends AbstractActionController
         $cache = $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
 
         $time = time();
-        $xml = $cache->getItem($cacheKey = 'xml' . crc32($feed->getId() . ($time - $time % 600)));
+        $xml = $cache->getItem($cacheKey = 'xml' . crc32($feed->getId() . ($time - $time % 300)));
 
         if (false == $xml) {
             $downloader = $feed->getParser()->getDownloader();
             $downloader->setCache($cache);
             $downloader->setSleep(100000, 1000000);
-            $xml = $feed->getUpdatedFeed()->export('rss', true);
+            $feedWriter = $feed->getUpdatedFeed();
+
+            $link = $this->getServerUrl() . $this->url()->fromRoute('feed', array('id' => $feed->getId()));
+            $feedWriter->setFeedLink($link, 'rss');
+            $xml = $feedWriter->export('rss', true);
             $cache->setItem($cacheKey, $xml);
         }
 

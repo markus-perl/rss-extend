@@ -104,7 +104,6 @@ abstract class AbstractParser
         /* @var \Zend\Feed\Reader\Entry\Atom $origEntry */
         foreach ($origFeed as $origEntry) {
             $entry = $updatedFeed->createEntry();
-
             foreach (array(
                          'title',
                          'link',
@@ -117,13 +116,14 @@ abstract class AbstractParser
                 $getter = 'get' . ucfirst($attrib);
                 $setter = 'set' . ucfirst($attrib);
                 if ($origEntry->$getter() !== null) {
-
                     if ($origEntry->$getter()) {
                         $entry->$setter($origEntry->$getter());
                     }
                 }
-
             }
+
+            $entry->setDateCreated(time());
+
             try {
                 $content = $this->getContent($origEntry);
             } catch (DownloadException $e) {

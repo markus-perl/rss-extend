@@ -14,6 +14,7 @@ class RemoveAttribs extends AbstractPostProcessor
     public function process (Entry $entry)
     {
         $content = $entry->getContent();
+
         foreach (array(
                      'img',
                      'br',

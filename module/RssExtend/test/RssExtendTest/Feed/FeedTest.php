@@ -169,4 +169,34 @@ class FeedTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://localhost/', $result->getLink());
         $this->assertEquals('some test items', $result->getDescription());
     }
+
+    public function testRssExportSlashComments() {
+        $feedString = file_get_contents(__DIR__ . '/Parser/feed.xml');
+        $item1Html = file_get_contents(__DIR__ . '/Parser/item2.html');
+        $downloader = $this->getMock('Downloader', array('download'));
+        $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
+        $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
+        $downloader->expects($this->at(2))->method('download')->will($this->returnValue($item1Html));
+
+
+        $config = new \Zend\Config\Config(array(
+                                               'name' => $name = 'test',
+                                               'url' => $url = 'http://localhost',
+                                               'method' => 'dom',
+                                               'dom' => array(
+                                                   'content' => '.content p',
+                                                   'image' => '.image img'
+                                               ),
+                                               'postProcess' => array(
+                                                   'staticImage' => 'http://localhost'
+                                               )
+                                          ));
+        $feed = new Feed('test', $config);
+        $feed->getParser()->setDownloader($downloader);
+
+        $result = $feed->getUpdatedFeed();
+        $xml = $result->export('rss');
+
+        $this->assertEquals(0, substr_count('slash:comments', $xml));
+    }
 }

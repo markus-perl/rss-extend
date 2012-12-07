@@ -23,14 +23,19 @@ class Mobilizer extends AbstractPostProcessor
          */
         foreach ($res as $element) {
 
-            $url = urlencode($element->getAttribute('href'));
-            $url = 'http://www.google.com/gwt/n?u=' . $url . '&noimg=1';
+            $href = $element->getAttribute('href');
+            $url = urlencode($href);
 
-            $mobilizer = $domDocument->createElement('a', '(mobilizer)');
-            $mobilizer->setAttribute('href', $url);
+            if (mb_strlen($url) > 7 && substr_count($href, 'javascript:') == 0 && substr_count($href, 'mailto:') == 0) {
 
-            $element->parentNode->insertBefore($mobilizer, $element->nextSibling);
-            $element->parentNode->insertBefore(new \DOMText (' '), $element->nextSibling);
+                $url = 'http://www.google.com/gwt/n?u=' . $url . '&noimg=1';
+
+                $mobilizer = $domDocument->createElement('a', '(mobilizer)');
+                $mobilizer->setAttribute('href', $url);
+
+                $element->parentNode->insertBefore($mobilizer, $element->nextSibling);
+                $element->parentNode->insertBefore(new \DOMText (' '), $element->nextSibling);
+            }
         }
 
         $entry->setContent($this->extractBody($res));

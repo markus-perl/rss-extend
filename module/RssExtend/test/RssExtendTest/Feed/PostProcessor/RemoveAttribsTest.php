@@ -33,7 +33,7 @@ class RemoveAttribsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<a href="http://localhost">link</a>', $entry->getContent());
     }
 
-    public function testProcessAnchor_2 ()
+    public function testProcessAnchor2 ()
     {
         $feed = new Feed;
         $image = new RemoveAttribs('', $feed);
@@ -45,7 +45,6 @@ class RemoveAttribsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('<a href="http://localhost">link</a>', $entry->getContent());
     }
-
 
 
 }
