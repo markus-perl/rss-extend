@@ -12,7 +12,7 @@
         <postProcess>
             <staticImage>http://www.seniorbook.de</staticImage>
             <mobilizer></mobilizer>
-            <removeStyle></removeStyle>
+            <removeAttribs></removeAttribs>
         </postProcess>
     </seniorbook-topics>
     <seniorbook-aid-project>
@@ -27,7 +27,7 @@
         <postProcess>
             <staticImage>http://www.seniorbook.de</staticImage>
             <mobilizer></mobilizer>
-            <removeStyle></removeStyle>
+            <removeAttribs></removeAttribs>
         </postProcess>
     </seniorbook-aid-project>
 </configdata>

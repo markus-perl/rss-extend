@@ -89,7 +89,9 @@ abstract class AbstractParser
         foreach (array(
                      'title',
                      'description',
-                     'link'
+                     'link',
+                     'dateCreated',
+                     'dateModified',
                  ) as $attrib) {
 
             $getter = 'get' . ucfirst($attrib);

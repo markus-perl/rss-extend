@@ -18,7 +18,7 @@
 		</trim>
         <postProcess>
             <mobilizer></mobilizer>
-            <removeStyle></removeStyle>
+            <removeAttribs></removeAttribs>
         </postProcess>
 	</gulli>
 </configdata>

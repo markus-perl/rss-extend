@@ -10,7 +10,7 @@
 		</dom>
 		<postProcess>
             <mobilizer></mobilizer>
-            <removeStyle></removeStyle>
+            <removeAttribs></removeAttribs>
 		</postProcess>
 	</abendzeitung>
 </configdata>

@@ -9,7 +9,7 @@
 		</dom>
         <postProcess>
             <mobilizer></mobilizer>
-            <removeStyle></removeStyle>
+            <removeAttribs></removeAttribs>
         </postProcess>
 	</derPostillion>
 </configdata>

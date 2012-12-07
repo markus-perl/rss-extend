@@ -11,7 +11,7 @@
 		<postProcess>
             <staticImage>http://www.heise.de</staticImage>
             <mobilizer></mobilizer>
-            <removeStyle></removeStyle>
+            <removeAttribs></removeAttribs>
 		</postProcess>
 	</heisemacandi>
 </configdata>
