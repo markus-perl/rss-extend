@@ -35,6 +35,35 @@ class Collection implements \Iterator, \Countable
         foreach ($config as $id => $entry) {
             $this->addElement(new Feed($id, $entry));
         }
+        $this->sort();
+    }
+
+    public function sort ()
+    {
+        $data = $this->data;
+
+        usort($data, function (Feed $a, Feed $b) {
+
+            $nameA = strtolower($a->getName());
+            $nameB = strtolower($b->getName());
+
+            if ($nameA == $nameB) {
+                return 0;
+            }
+
+            $tmp = array(
+                $nameA,
+                $nameB
+            );
+            sort($tmp);
+            if ($tmp[0] == $nameA) {
+                return -1;
+            }
+            return 1;
+        });
+
+        $this->data = $data;
+        $this->rewind();
     }
 
     public function rewind ()

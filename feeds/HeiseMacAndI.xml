@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<heisemacandi>
+		<name>Heise Mac &amp; I</name>
+		<url>http://www.heise.de/mac-and-i/news-atom.xml</url>
+		<method>dom</method>
+		<dom>
+			<content>#artikel > p, .meldung_wrapper</content>
+			<xhtml>true</xhtml>
+		</dom>
+		<postProcess>
+            <staticImage>http://www.heise.de</staticImage>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+		</postProcess>
+	</heisemacandi>
+</configdata>

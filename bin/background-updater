@@ -8,6 +8,9 @@ $application = Zend\Mvc\Application::init(require 'config/application.config.php
 $collection = $application->getServiceManager()->get('RssExtend\Feed\Collection');
 
 foreach ($collection as $feed) {
+
+    echo 'Updating Feed ' . $feed->getId();
+
     /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
     $cache = $application->getServiceManager()->get('Zend\Cache\Storage\Adapter\Filesystem');
 
@@ -15,8 +18,12 @@ foreach ($collection as $feed) {
     $downloader->setCache($cache);
     $downloader->setSleep(1000000, 10000000); // 1 - 10 sec
 
-    $entries = $feed->getUpdatedFeed();
-    echo 'feed ' . $feed->getId() .' successfully updated.' . PHP_EOL;
+    try {
+        $entries = $feed->getUpdatedFeed();
+        echo ' ... success.' . PHP_EOL;
+    } catch (\Exception $e) {
+        echo ' ... failure: ' . $e->getMessage() . '.' . PHP_EOL;
+    }
 }
 
 exit(0);

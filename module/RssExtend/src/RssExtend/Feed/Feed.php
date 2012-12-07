@@ -152,6 +152,9 @@ class Feed
     {
         $feed = $this->getParser()->getUpdatedFeed();
 
+        $feed->setTitle($feed->getTitle() . ' - ' . \RssExtend\Version::NAME);
+
+
         foreach ($feed as $entry) {
             foreach ($this->getPostProcessors() as $postProcessor) {
                 $postProcessor->process($entry);

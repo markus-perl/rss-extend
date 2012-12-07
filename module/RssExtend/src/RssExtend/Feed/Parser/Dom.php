@@ -55,13 +55,13 @@ class Dom extends AbstractParser
             $dom->setDocumentXhtml( $content, 'utf-8' );
         }
 
-        $results = $dom->execute($this->config->content);
+        $results = $dom->execute(trim($this->config->content));
 
         $content = '';
 
         /* @var $node = DomElement */
         foreach ($results as $node) {
-            $content .= '<p>' . trim(strip_tags($this->getInnerHtml($node), '<br><a><br/><img>')) . '</p>';
+            $content .= '<p>' . trim($this->getInnerHtml($node)) . '</p>';
         }
 
         if ($content == '') {
@@ -102,7 +102,7 @@ class Dom extends AbstractParser
             $dom = new \Zend\Dom\Query();
             $dom->setDocument($html, 'utf-8');
 
-            $results = $dom->execute($this->config->image);
+            $results = $dom->execute(trim($this->config->image));
 
             if (count($results)) {
                 $imageUrl = $results->current()->getAttribute('src');

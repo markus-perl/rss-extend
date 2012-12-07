@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<macnews>
+		<name>macnews.de</name>
+		<url>http://www.giga.de/macnews/feed</url>
+		<method>dom</method>
+		<dom>
+			<xhtml>true</xhtml>
+			<content>.post-excerpt</content>
+		</dom>
+	</macnews>
+</configdata>

@@ -17,7 +17,7 @@ return array(
             ),
             'RssExtend\Feed\Config' => array(
                 'parameters' => array(
-                    'directory' => __DIR__ . '/../feeds',
+                    'directory' => __DIR__ . '/../../../feeds',
                 )
             ),
             'RssExtend\Feed\Collection' => array(
@@ -32,13 +32,14 @@ return array(
             'feed' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/feed[/:id][/:action]',
+                    'route' => '/feed[/:id][/:action][/type/:type]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                     'defaults' => array(
                         'controller' => 'RssExtend\Controller\Feed',
-                        'action' => 'show',
+                        'action' => 'rss',
+                        'type' => 'rss'
                     ),
                 )
             ),

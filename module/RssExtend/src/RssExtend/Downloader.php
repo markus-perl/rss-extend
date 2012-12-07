@@ -1,6 +1,7 @@
 <?php
 namespace RssExtend;
 
+
 class Downloader
 {
 
@@ -89,24 +90,27 @@ class Downloader
 
         $content = false;
 
-        if ($this->getCache()) {
-            $content = $this->getCache()->getItem($key);
+        if ($cached) {
+            if ($this->getCache()) {
+                $content = $this->getCache()->getItem($key);
+            }
         }
 
         if (false == $content) {
 
-            $timeout = array(
-                'http' => array(
-                    'timeout' => 5
-                )
-            );
-
-            $context = stream_context_create($timeout);
-
             $retries = 0;
             while (false == $content) {
                 usleep(mt_rand($this->sleepMin, $this->sleepMax));
-                $content = file_get_contents($url, null, $context);
+
+                $downloadMethod = null;
+                if (function_exists('curl_init') && substr($url, 0, 4) == 'http') {
+                    $content = $this->downloadCurl($url);
+                    $downloadMethod = 'curl';
+                } else {
+                    $content = $this->downloadFileGetContents($url);
+                    $downloadMethod = 'file_get_contents';
+                }
+
                 $retries++;
                 if ($retries > 2) {
                     break;
@@ -116,14 +120,43 @@ class Downloader
 
             if ($content) {
                 $this->sessionCache[$key] = $content;
-                if ($this->getCache()) {
+                if ($cached && $this->getCache()) {
                     $this->getCache()->setItem($key, $content);
                 }
             } else {
-                throw new Exception\RuntimeException('failed to download url ' . $url);
+                throw new Exception\DownloadException('failed to download url ' . $url . ' with ' . $downloadMethod);
             }
         }
 
         return $content;
+    }
+
+    /**
+     * @param $url
+     * @return mixed
+     */
+    private function downloadCurl ($url)
+    {
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 5);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+        $data = curl_exec($curl);
+        curl_close($curl);
+        return $data;
+    }
+
+    private function downloadFileGetContents ($url)
+    {
+        $timeout = array(
+            'http' => array(
+                'timeout' => 5
+            )
+        );
+
+        $context = stream_context_create($timeout);
+        return file_get_contents($url, null, $context);
+
     }
 }

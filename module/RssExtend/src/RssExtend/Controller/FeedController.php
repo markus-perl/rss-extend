@@ -70,6 +70,8 @@ class FeedController extends AbstractActionController
                                    ));
         $viewModel->setTerminal(true);
 
+        $this->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/rss+xml; charset=utf-8');
+
         return $viewModel;
     }
 

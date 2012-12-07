@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<golem>
+		<name>Golem</name>
+		<url>http://rss.golem.de/rss.php?feed=RSS1.0</url>
+		<method>dom</method>
+		<dom>
+			<content>#screen article p</content>
+            <image>aside img</image>
+		</dom>
+        <postProcess>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+	</golem>
+</configdata>

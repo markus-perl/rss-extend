@@ -22,6 +22,8 @@
             <tarfileset dir="${source}/data/cache" prefix="/${folderName}/data/cache">
                 <include name="EMPTY"/>
             </tarfileset>
+            <tarfileset dir="${source}/feeds" prefix="/${folderName}/feeds">
+            </tarfileset>
             <tarfileset dir="${source}/module" prefix="/${folderName}/module">
             </tarfileset>
             <tarfileset dir="${source}/public" prefix="/${folderName}/public">
@@ -32,6 +34,7 @@
             <tarfileset dir="${source}/vendor" prefix="/${folderName}/vendor">
                 <include name="composer/**"/>
                 <include name="zendframework/zendframework/library/**"/>
+                <include name="autoload.php"/>
             </tarfileset>
         </tar>
 

@@ -17,6 +17,10 @@ class Module
 {
     public function onBootstrap (MvcEvent $e)
     {
+        if ('' == ini_get('date.timezone')) {
+            date_default_timezone_set('Europe/Berlin');
+        }
+
         $e->getApplication()->getServiceManager()->get('translator');
         $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+    <seniorbook-topics>
+        <name>seniorbook.de Topics</name>
+        <url>http://www.seniorbook.de/feed/rss/themen/zone/topic</url>
+        <method>dom</method>
+        <dom>
+            <xhtml>true</xhtml>
+            <content>.articleText</content>
+            <image>.topicImage img</image>
+        </dom>
+        <postProcess>
+            <staticImage>http://www.seniorbook.de</staticImage>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+    </seniorbook-topics>
+    <seniorbook-aid-project>
+        <name>seniorbook.de Aid Project</name>
+        <url>http://www.seniorbook.de/feed/rss/themen/zone/aidproject</url>
+        <method>dom</method>
+        <dom>
+            <xhtml>true</xhtml>
+            <content>.articleText</content>
+            <image>.topicImage img</image>
+        </dom>
+        <postProcess>
+            <staticImage>http://www.seniorbook.de</staticImage>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+    </seniorbook-aid-project>
+</configdata>

@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+
+function execute ($cmd)
+{
+    $return = exec($cmd, $output);
+
+    echo $cmd . PHP_EOL;
+    foreach ($output as $line) {
+        echo $line . PHP_EOL;
+    }
+
+    if ($return != 0) {
+        exit ('failure');
+    }
+
+    return $return;
+}
+
+if (!isset($argv[1])) {
+    exit ('Usage: ' . $argv[0] . ' <release.tar.gz');
+}
+
+$file = realpath($argv[1]);
+if (file_exists($file)) {
+    echo execute('scp ' . $file . ' www-data@open-mmx.de:/tmp');
+    echo execute('ssh www-data@open-mmx.de "cd /tmp; tar -xzvf ' . basename($file) . '"');
+    echo execute('ssh www-data@open-mmx.de "cd /tmp/' . basename($file, '.tar.gz') . '; cp -r * /var/www/rssextend/"');
+} else {
+    exit('File ' . $argv[1] . ' not found');
+}

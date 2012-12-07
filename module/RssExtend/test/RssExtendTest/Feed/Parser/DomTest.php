@@ -33,7 +33,8 @@ class DomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \RssExtend\Feed\Parser\Exception\RuntimeException
      */
-    public function testGetContent() {
+    public function testGetContent ()
+    {
 
         $feedString = file_get_contents(__DIR__ . '/feed.xml');
         $item1Html = file_get_contents(__DIR__ . '/item1.html');
@@ -42,8 +43,7 @@ class DomTest extends \PHPUnit_Framework_TestCase
         $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
 
 
-        $config = new \Zend\Config\Config(array(
-                                          ));
+        $config = new \Zend\Config\Config(array());
 
         $feed = new Feed();
         $dom = new Dom($feed, $config);
@@ -78,7 +78,6 @@ class DomTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUpdatedFeedWithImage ()
     {
-
         $feedString = file_get_contents(__DIR__ . '/feed.xml');
         $item1Html = file_get_contents(__DIR__ . '/item1.html');
         $downloader = $this->getMock('Downloader', array('download'));
@@ -103,5 +102,28 @@ class DomTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<p><img src="http://localhost.de/image.jpg" /></p><p>This is a test</p><p>This is another block</p>', $current->getContent());
     }
 
+    public function testStripTags ()
+    {
+        $feedString = file_get_contents(__DIR__ . '/feed.xml');
+        $item1Html = file_get_contents(__DIR__ . '/item3.html');
+        $downloader = $this->getMock('Downloader', array('download'));
+        $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
+        $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
+
+
+        $config = new \Zend\Config\Config(array(
+                                               'content' => '.content p',
+                                          ));
+
+        $feed = new Feed();
+        $feed->setUrl(__DIR__ . '/feed.xml');
+
+        $dom = new Dom($feed, $config);
+        $dom->setDownloader($downloader);
+
+        $result = $dom->getUpdatedFeed();
+        $current = $result->current();
+        $this->assertEquals('<p>This is <br/>a test.</p>', $current->getContent());
+    }
 
 }

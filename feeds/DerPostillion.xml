@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<derPostillion>
+		<name>Der Postillion</name>
+		<url>http://www.der-postillon.com/feeds/posts/default?alt=rss</url>
+		<method>dom</method>
+		<dom>
+			<content>.post .post-body</content>
+		</dom>
+        <postProcess>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+	</derPostillion>
+</configdata>

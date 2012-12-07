@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<abendzeitung>
+		<name>Abendzeitung</name>
+		<url>http://www.abendzeitung-muenchen.de/muenchen.xml</url>
+		<method>dom</method>
+		<dom>
+			<content>#mainContent .brickgroup p</content>
+            <image>#mainContent .imageContainer img</image>
+		</dom>
+		<postProcess>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+		</postProcess>
+	</abendzeitung>
+</configdata>

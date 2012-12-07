@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<focus>
+		<name>Focus</name>
+		<url>http://rss2.focus.de/c/32191/f/443312/index.rss</url>
+		<method>dom</method>
+		<dom>
+			<xhtml>true</xhtml>
+			<content>.articleContent .textBlock</content>
+		</dom>
+        <postProcess>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+	</focus>
+</configdata>

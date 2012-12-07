@@ -45,4 +45,19 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('test', $downloader->download(__DIR__ . '/test.txt'));
     }
+
+    public function testCacheDisable() {
+        $downloader = new Downloader();
+
+        $cache = $this->getMock('Zend\Cache\Storage\Adapter\Filesystem', array(
+                                                                              'getItem',
+                                                                              'setItem'
+                                                                         ));
+        $cache->expects($this->never())->method('getItem');
+        $cache->expects($this->never())->method('setItem');
+
+        $downloader->setCache($cache);
+
+        $this->assertEquals('test', $downloader->download(__DIR__ . '/test.txt', false));
+    }
 }

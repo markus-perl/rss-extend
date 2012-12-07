@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<gamestar>
+		<name>Gamestar</name>
+		<url>http://www.gamestar.de/news/rss/news.rss</url>
+		<method>dom</method>
+		<dom>
+			<xhtml>true</xhtml>
+			<content>div.article p[span]</content>
+		</dom>
+        <postProcess>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+	</gamestar>
+</configdata>

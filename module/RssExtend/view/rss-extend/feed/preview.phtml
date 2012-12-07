@@ -1,3 +1,5 @@
+<?php $this->headTitle()->prepend($feed->getName()); ?>
+
 <div data-role="header">
     <?php echo $this->headerButton($this->translate('Back'), $this->url('feed', array('id' => $feed->getId())), 'arrow-l', \RssExtend\Helper\HeaderButton::LEFT,
     array('data-rel' => 'back')); ?>
@@ -11,6 +13,7 @@
 <div data-role="collapsible">
 	        	<h3><?php echo $entry->getTitle(); ?></h3>
 	        	<p><?php echo trim($entry->getContent()); ?></p>
+                <div style="clear:both"></div>
 </div>
 			<?php endforeach; ?>
 	</div>

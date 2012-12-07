@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<gulli>
+		<name>Gulli</name>
+		<url>http://ticker.gulli.com/rss</url>
+		<method>trim</method>
+		<trim>
+			<from>
+				<searchText><![CDATA[<div class="Clear"></div>]]></searchText>
+				<offset>2</offset>
+				<direction>top-to-bottom</direction>
+			</from>
+			<to>
+				<searchText><![CDATA[<p class="_redakteur">]]></searchText>
+				<offset>0</offset>
+				<direction>top-to-bottom</direction>
+			</to>
+		</trim>
+        <postProcess>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+	</gulli>
+</configdata>

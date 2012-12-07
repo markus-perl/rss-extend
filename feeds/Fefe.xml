@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<fefe>
+		<name>Fefes Blog</name>
+		<url>http://blog.fefe.de/rss.xml?html</url>
+		<method>none</method>
+		<postProcess>
+			<relativeLinks>http://blog.fefe.de</relativeLinks>
+			<mobilizer></mobilizer>
+		</postProcess>
+	</fefe>
+</configdata>

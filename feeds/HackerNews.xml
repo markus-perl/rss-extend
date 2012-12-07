@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<hackernews>
+		<name>The Hacker News</name>
+		<url>http://www.blogger.com/feeds/4802841478634147276/posts/default</url>
+		<method>trim</method>
+        <trim>
+            <from>
+                <searchText><![CDATA[<div dir="ltr" style="text-align: left;" trbidi="on">]]></searchText>
+                <offset>0</offset>
+                <direction>top-to-bottom</direction>
+            </from>
+            <to>
+                <searchText><![CDATA[</div>
+</div>]]></searchText>
+                <offset>0</offset>
+                <direction>top-to-bottom</direction>
+            </to>
+        </trim>
+        <postProcess>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+	</hackernews>
+</configdata>

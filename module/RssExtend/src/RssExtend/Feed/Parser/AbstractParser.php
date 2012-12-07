@@ -3,6 +3,7 @@ namespace RssExtend\Feed\Parser;
 
 use RssExtend\Feed\Feed;
 use RssExtend\Downloader;
+use RssExtend\Exception\DownloadException;
 use \Zend\Config\Config;
 
 abstract class AbstractParser
@@ -85,7 +86,18 @@ abstract class AbstractParser
 
         $updatedFeed = new \Zend\Feed\Writer\Feed();
 
-        $updatedFeed->setTitle($title = $origFeed->getTitle());
+        foreach (array(
+                     'title',
+                     'description',
+                     'link'
+                 ) as $attrib) {
+
+            $getter = 'get' . ucfirst($attrib);
+            $setter = 'set' . ucfirst($attrib);
+            if ($origFeed->$getter()) {
+                $updatedFeed->$setter($origFeed->$getter());
+            }
+        }
 
         /* @var \Zend\Feed\Reader\Entry\Atom $origEntry */
         foreach ($origFeed as $origEntry) {
@@ -96,6 +108,7 @@ abstract class AbstractParser
                          'link',
                          'description',
                          'dateModified',
+                         'dateCreated',
                          'description'
                      ) as $attrib) {
 
@@ -109,7 +122,12 @@ abstract class AbstractParser
                 }
 
             }
-            $content = $this->getContent($origEntry);
+            try {
+                $content = $this->getContent($origEntry);
+            } catch (DownloadException $e) {
+                $content = 'failed to fetch content: ' . $e->getMessage();
+            }
+            $content = strip_tags($content, '<p><br><a><img>');
 
             if ($content) {
                 $content = str_replace(']]>', '', $content);

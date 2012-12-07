@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<iphoneTicker>
+		<name>iPhone Ticker</name>
+		<url>http://www.iphone-ticker.de/feed</url>
+		<method>dom</method>
+		<dom>
+			<content>#post_text</content>
+		</dom>
+        <postProcess>
+            <mobilizer></mobilizer>
+            <removeStyle></removeStyle>
+        </postProcess>
+	</iphoneTicker>
+</configdata>

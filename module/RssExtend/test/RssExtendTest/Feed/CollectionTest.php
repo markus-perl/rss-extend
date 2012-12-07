@@ -44,7 +44,23 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $feed2 = $collection->getById('feed2');
         $this->assertNotNull($feed2);
         $this->assertEquals('feed2', $feed2->getId());
+    }
 
+    public function testSort() {
+
+        $feed1 = new Feed();
+        $feed1->setName('B');
+
+        $feed2 = new Feed();
+        $feed2->setName('A');
+
+        $collection = new Collection();
+        $collection->addElement($feed1);
+        $collection->addElement($feed2);
+
+        $collection->sort();
+
+        $this->assertEquals($feed2, $collection->current());
 
     }
 
