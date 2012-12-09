@@ -13,6 +13,9 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Cache\StorageFactory;
 
+use RssExtend\Requirement\PhpVersion;
+use RssExtend\Requirement\CacheWriteable;
+
 class Module
 {
     public function onBootstrap (MvcEvent $e)
@@ -25,6 +28,25 @@ class Module
         $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+        $this->checkRequirements($e);
+    }
+
+    public function checkRequirements (MvcEvent $e)
+    {
+        /*@var \Zend\Cache\Storage\Adapter\Filesystem $cache */
+        $cache = $e->getApplication()->getServiceManager()->get('Zend\Cache\Storage\Adapter\Filesystem');
+        $requirements = array();
+
+        $requirements[] = new PhpVersion();
+        $requirements[] = new CacheWriteable($cache->getOptions()->getCacheDir());
+
+        foreach ($requirements as $requirement) {
+            if (false == $requirement->checkRequirement()) {
+                exit($requirement->getErrorMessage());
+            }
+        }
+
     }
 
     public function getConfig ()
