@@ -6,7 +6,7 @@ use \Zend\Validator\Uri;
 class None extends AbstractParser
 {
 
-    protected function getContent (\Zend\Feed\Reader\Entry\EntryInterface $entry)
+    protected function getContent (\Zend\Feed\Writer\Entry $entry)
     {
         return $entry->getContent();
     }

@@ -21,6 +21,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $config = new Config(__DIR__ . '/testData');
 
         $collection = new Collection();
+        $collection->setCache($cache = $this->getMock('\Zend\Cache\Storage\Adapter\Filesystem'));
         $collection->fillByConfig($config);
 
         $this->assertEquals(2, $collection->count());
@@ -29,10 +30,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
             $this->assertInstanceOf('RssExtend\Feed\Feed', $feed);
             $this->assertNotNull($feed->getName());
             $this->assertNotNull($feed->getId());
+            $this->assertEquals($cache, $feed->getCache());
         }
     }
 
-    public function testgetById() {
+    public function testgetById ()
+    {
         $config = new Config(__DIR__ . '/testData');
 
         $collection = new Collection($config);
@@ -46,8 +49,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('feed2', $feed2->getId());
     }
 
-    public function testSort() {
-
+    public function testSort ()
+    {
         $feed1 = new Feed();
         $feed1->setName('B');
 
@@ -61,7 +64,13 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $collection->sort();
 
         $this->assertEquals($feed2, $collection->current());
+    }
 
+    public function testSetGetCache ()
+    {
+        $collection = new Collection();
+        $collection->setCache($mock = $this->getMock('\Zend\Cache\Storage\Adapter\Filesystem'));
+        $this->assertEquals($mock, $collection->getCache());
     }
 
 }

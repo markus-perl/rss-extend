@@ -12,6 +12,11 @@
 			<?php foreach ($entries as $entry): ?>
 <div data-role="collapsible">
 	        	<h3><?php echo $entry->getTitle(); ?></h3>
+
+                <?php if ($entry->getMediaThumbnail()): ?>
+                <?php $thumb = $entry->getMediaThumbnail(); ?>
+                <img src="<?php echo $thumb['url']; ?>" />
+                <?php endif; ?>
 	        	<p><?php echo trim($entry->getContent()); ?></p>
                 <div style="clear:both"></div>
 </div>

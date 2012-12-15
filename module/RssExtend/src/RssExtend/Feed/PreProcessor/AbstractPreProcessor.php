@@ -1,12 +1,11 @@
 <?php
-namespace RssExtend\Feed\PostProcessor;
+namespace RssExtend\Feed\PreProcessor;
 use RssExtend\Feed\Processor\AbstractProcessor;
 use \Zend\Feed\Writer\Entry;
 
 
-abstract class AbstractPostProcessor extends AbstractProcessor
+abstract class AbstractPreProcessor extends AbstractProcessor
 {
-
     /**
      * @param Entry $entry
      * @return Entry

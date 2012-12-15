@@ -21,7 +21,7 @@ class TrimTest extends \PHPUnit_Framework_TestCase
 
         $feedString = file_get_contents(__DIR__ . '/feed.xml');
         $item1Html = file_get_contents(__DIR__ . '/item1.html');
-        $downloader = $this->getMock('Downloader', array('download'));
+        $downloader = $this->getMock('\RssExtend\Downloader', array('download'));
         $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
         $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
 
@@ -45,7 +45,7 @@ class TrimTest extends \PHPUnit_Framework_TestCase
         $dom = new Trim($feed, $config);
         $dom->setDownloader($downloader);
 
-        $result = $dom->getUpdatedFeed();
+        $result = $dom->getUpdatedFeed($dom->fetchFeed());
         $current = $result->current();
         $this->assertEquals('<p>This is a test</p>
         <p>This is another block</p>', $current->getContent());
@@ -56,7 +56,7 @@ class TrimTest extends \PHPUnit_Framework_TestCase
     {
         $feedString = file_get_contents(__DIR__ . '/feed.xml');
         $item1Html = file_get_contents(__DIR__ . '/item3.html');
-        $downloader = $this->getMock('Downloader', array('download'));
+        $downloader = $this->getMock('\RssExtend\Downloader', array('download'));
         $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
         $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
 
@@ -80,7 +80,7 @@ class TrimTest extends \PHPUnit_Framework_TestCase
         $dom = new Trim($feed, $config);
         $dom->setDownloader($downloader);
 
-        $result = $dom->getUpdatedFeed();
+        $result = $dom->getUpdatedFeed($dom->fetchFeed());
         $current = $result->current();
         $this->assertEquals('<p>This is <br />a test. And something in a div</p>', $current->getContent());
     }

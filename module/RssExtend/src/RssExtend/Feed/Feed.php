@@ -7,9 +7,19 @@ class Feed
 {
 
     /**
+     * @var \Zend\Cache\Storage\Adapter\Filesystem
+     */
+    private $cache = null;
+
+    /**
      * @var \Zend\Config\Config
      */
     private $postProcess;
+
+    /**
+     * @var \Zend\Config\Config
+     */
+    private $preProcess;
 
     /**
      * @var string
@@ -142,6 +152,7 @@ class Feed
             }
 
             $parser = new $parserName($this, $this->getMethodConfig());
+            $parser->getDownloader()->setCache($this->getCache());
             $this->setParser($parser);
         }
 
@@ -153,7 +164,15 @@ class Feed
      */
     public function getUpdatedFeed ()
     {
-        $feed = $this->getParser()->getUpdatedFeed();
+        $origFeed = $this->getParser()->fetchFeed();
+
+        foreach ($origFeed as $entry) {
+            foreach ($this->getPreProcessors() as $preProcessor) {
+                $preProcessor->process($entry);
+            }
+        }
+
+        $feed = $this->getParser()->getUpdatedFeed($origFeed);
 
         $feed->setTitle($feed->getTitle() . ' - ' . \RssExtend\Version::NAME);
 
@@ -196,6 +215,13 @@ class Feed
         if ($id) {
             $this->setId($id);
         }
+
+        if (!\Zend\Feed\Writer\Writer::isRegistered('Media')) {
+            $extensions = \Zend\Feed\Writer\Writer::getExtensionManager();
+            $extensions->setInvokableClass('MediaEntry', 'RssExtend\Feed\Writer\Extension\Media\Entry');
+            $extensions->setInvokableClass('MediaRendererEntry', 'RssExtend\Feed\Writer\Extension\Media\Renderer\Entry');
+            \Zend\Feed\Writer\Writer::registerExtension('Media');
+        }
     }
 
     /**
@@ -222,6 +248,10 @@ class Feed
             $this->setPostProcess($config->postProcess);
         }
 
+        if ($config->preProcess) {
+            $this->setPreProcess($config->preProcess);
+        }
+
         $method = $config->method;
         $this->setMethod($method, $config->$method);
     }
@@ -241,6 +271,22 @@ class Feed
     public function getPostProcess ()
     {
         return $this->postProcess;
+    }
+
+    /**
+     * @param \Zend\Config\Config $postProcess
+     */
+    public function setPreProcess (\Zend\Config\Config $postProcess)
+    {
+        $this->preProcess = $postProcess;
+    }
+
+    /**
+     * @return \Zend\Config\Config
+     */
+    public function getPreProcess ()
+    {
+        return $this->preProcess;
     }
 
     /**
@@ -265,5 +311,45 @@ class Feed
         }
 
         return $postProcessors;
+    }
+
+    /**
+     * @return array[]AbstractPostProcessor
+     * @throws Exception\RuntimeException
+     */
+    public function getPreProcessors ()
+    {
+        if (null === $this->getPreProcess()) {
+            return array();
+        }
+
+        $preProcessors = array();
+        foreach ($this->getPreProcess() as $name => $config) {
+            $preProcessorName = 'RssExtend\\Feed\\PreProcessor\\' . ucfirst($name);
+
+            if (false == class_exists($preProcessorName)) {
+                throw new Exception\RuntimeException('invalid pre processor specified');
+            }
+
+            $preProcessors[] = new $preProcessorName($config, $this);
+        }
+
+        return $preProcessors;
+    }
+
+    /**
+     * @param \Zend\Cache\Storage\Adapter\Filesystem $cache
+     */
+    public function setCache (\Zend\Cache\Storage\Adapter\Filesystem $cache = null)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
+     * @return \Zend\Cache\Storage\Adapter\Filesystem
+     */
+    public function getCache ()
+    {
+        return $this->cache;
     }
 }

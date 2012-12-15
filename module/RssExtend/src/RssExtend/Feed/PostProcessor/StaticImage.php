@@ -25,6 +25,13 @@ class StaticImage extends AbstractPostProcessor
         }
 
         $entry->setContent($this->extractBody($res));
+
+        if ($entry->getMediaThumbnail()) {
+            $thumb = $entry->getMediaThumbnail();
+            $thumb['url'] = $this->config . $thumb['url'];
+            $entry->setMediaThumbnail($thumb);
+        }
+
         return $entry;
     }
 

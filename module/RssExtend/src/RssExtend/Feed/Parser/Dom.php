@@ -10,7 +10,7 @@ class Dom extends AbstractParser
      * @param \Zend\Feed\Reader\Entry\EntryInterface $entry
      * @return string
      */
-    private function getUrl (\Zend\Feed\Reader\Entry\EntryInterface $entry)
+    private function getUrl (\Zend\Feed\Writer\Entry $entry)
     {
         $url = $entry->getContent();
         $validator = new \Zend\Uri\Http();
@@ -25,8 +25,9 @@ class Dom extends AbstractParser
      * (non-PHPdoc)
      * @see RssExtend_Worker_Abstract::_getContent()
      */
-    protected function getContent (\Zend\Feed\Reader\Entry\EntryInterface $entry)
+    protected function getContent (\Zend\Feed\Writer\Entry $entry)
     {
+        $url = $this->getUrl($entry);
 
         $url = $this->getUrl($entry);
         $html = $this->getDownloader()->download($url);
@@ -92,7 +93,7 @@ class Dom extends AbstractParser
     /**
      * @return string
      */
-    protected function getImage (\Zend\Feed\Reader\Entry\EntryInterface $entry)
+    protected function getImage (\Zend\Feed\Writer\Entry $entry)
     {
 
         if (isset($this->config->image)) {

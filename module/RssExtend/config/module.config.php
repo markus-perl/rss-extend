@@ -23,6 +23,7 @@ return array(
             'RssExtend\Feed\Collection' => array(
                 'parameters' => array(
                     'config' => 'RssExtend\Feed\Config',
+                    'cache' => '\Zend\Cache\Storage\Adapter\Filesystem',
                 ),
             )
         )

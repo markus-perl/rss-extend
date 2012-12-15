@@ -8,6 +8,11 @@ class Collection implements \Iterator, \Countable
     private $position = 0;
 
     /**
+     * @var \Zend\Cache\Storage\Adapter\Filesystem
+     */
+    private $cache = null;
+
+    /**
      * @var array[]Feed
      */
     private $data = array();
@@ -33,7 +38,8 @@ class Collection implements \Iterator, \Countable
     public function fillByConfig (Config $config)
     {
         foreach ($config as $id => $entry) {
-            $this->addElement(new Feed($id, $entry));
+            $feed = new Feed($id, $entry);
+            $this->addElement($feed);
         }
         $this->sort();
     }
@@ -73,7 +79,9 @@ class Collection implements \Iterator, \Countable
 
     public function current ()
     {
-        return $this->data[$this->position];
+        $entry = $this->data[$this->position];
+        $entry->setCache($this->getCache());
+        return $entry;
     }
 
     public function key ()
@@ -109,5 +117,21 @@ class Collection implements \Iterator, \Countable
         }
 
         return null;
+    }
+
+    /**
+     * @param \Zend\Cache\Storage\Adapter\Filesystem $cache
+     */
+    public function setCache (\Zend\Cache\Storage\Adapter\Filesystem $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
+     * @return \Zend\Cache\Storage\Adapter\Filesystem
+     */
+    public function getCache ()
+    {
+        return $this->cache;
     }
 }

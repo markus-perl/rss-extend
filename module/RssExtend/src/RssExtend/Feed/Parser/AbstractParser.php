@@ -4,6 +4,7 @@ namespace RssExtend\Feed\Parser;
 use RssExtend\Feed\Feed;
 use RssExtend\Downloader;
 use RssExtend\Exception\DownloadException;
+use RssExtend\ImageSize;
 use \Zend\Config\Config;
 
 abstract class AbstractParser
@@ -20,9 +21,40 @@ abstract class AbstractParser
     protected $config = null;
 
     /**
-     * @var null
+     * @var Downloader
      */
     private $downloader = null;
+
+    /**
+     * @var ImageSize
+     */
+    private $imageSize = null;
+
+    /**
+     * @param \RssExtend\ImageSize $imageSize
+     */
+    public function setImageSize ($imageSize)
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    /**
+     * @return \RssExtend\ImageSize
+     */
+    public function getImageSize ()
+    {
+        if (null === $this->imageSize) {
+            $this->imageSize = new ImageSize();
+
+            if ($this->getDownloader()) {
+                $this->imageSize->setDownloader($this->getDownloader());
+                $this->imageSize->setCache($this->getDownloader()->getCache());
+            }
+        }
+
+        return $this->imageSize;
+    }
+
 
     /**
      * @param Downloader $downloader
@@ -69,21 +101,22 @@ abstract class AbstractParser
     }
 
     /**
-     * @return \Zend\Feed\Reader\Feed\FeedInterface
+     * @return \Zend\Feed\Writer\Feed
      */
     public function fetchFeed ()
     {
         $feedContent = $this->getDownloader()->download($this->feed->getUrl(), false);
-        return \Zend\Feed\Reader\Reader::importString($feedContent, null, 0);
+        $feed = \Zend\Feed\Reader\Reader::importString($feedContent, null, 0);
+
+        return $this->makeWriteable($feed);
     }
 
     /**
+     * @param \Zend\Feed\Reader\Feed\FeedInterface $origFeed
      * @return \Zend\Feed\Writer\Feed
      */
-    public function getUpdatedFeed ()
+    public function makeWriteable (\Zend\Feed\Reader\Feed\FeedInterface $origFeed)
     {
-        $origFeed = $this->fetchFeed();
-
         $updatedFeed = new \Zend\Feed\Writer\Feed();
 
         foreach (array(
@@ -110,7 +143,8 @@ abstract class AbstractParser
                          'description',
                          'dateModified',
                          'dateCreated',
-                         'description'
+                         'description',
+                         'content',
                      ) as $attrib) {
 
                 $getter = 'get' . ucfirst($attrib);
@@ -121,11 +155,23 @@ abstract class AbstractParser
                     }
                 }
             }
+            $updatedFeed->addEntry($entry);
+        }
 
-            $entry->setDateCreated(time());
+        return $updatedFeed;
+    }
+
+    /**
+     * @return \Zend\Feed\Writer\Feed
+     */
+    public function getUpdatedFeed (\Zend\Feed\Writer\Feed $feed)
+    {
+
+        /* @var \Zend\Feed\Writer\Entry $entry */
+        foreach ($feed as $entry) {
 
             try {
-                $content = $this->getContent($origEntry);
+                $content = $this->getContent($entry);
             } catch (DownloadException $e) {
                 $content = 'failed to fetch content: ' . $e->getMessage();
             }
@@ -134,27 +180,30 @@ abstract class AbstractParser
             if ($content) {
                 $content = str_replace(']]>', '', $content);
 
-                $image = $this->getImage($origEntry);
-                if ($image) {
-                    $imageTag = '<p><img src="' . $image . '" /></p>';
+                $imageUrl = $this->getImage($entry);
+                if ($imageUrl) {
+                    $imageSize = $this->getImageSize();
+                    $size = $imageSize->getSizeByUrl($imageUrl);
+                    $entry->setMediaThumbnail($imageUrl, $size['x'], $size['y']);
+
+                    $imageTag = '<p><img src="' . $imageUrl . '" /></p>';
                     $content = $imageTag . $content;
                 }
 
                 $entry->setContent($content);
             }
-
-            $updatedFeed->addEntry($entry);
         }
 
-        return $updatedFeed;
+        $feed->rewind();
+        return $feed;
     }
 
-    abstract protected function getContent (\Zend\Feed\Reader\Entry\EntryInterface $entry);
+    abstract protected function getContent (\Zend\Feed\Writer\Entry $entry);
 
     /**
      * @return string
      */
-    protected function getImage (\Zend\Feed\Reader\Entry\EntryInterface $entry)
+    protected function getImage (\Zend\Feed\Writer\Entry $entry)
     {
         return null;
     }

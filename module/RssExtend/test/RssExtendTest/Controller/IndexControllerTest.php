@@ -55,6 +55,8 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('RssExtend\Feed\Collection', $collection);
         $this->assertEquals(2, $collection->count());
 
+        $this->assertNotNull($collection->getCache());
+
     }
 
 }

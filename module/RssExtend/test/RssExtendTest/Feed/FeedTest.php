@@ -140,7 +140,7 @@ class FeedTest extends \PHPUnit_Framework_TestCase
     {
         $feedString = file_get_contents(__DIR__ . '/Parser/feed.xml');
         $item1Html = file_get_contents(__DIR__ . '/Parser/item2.html');
-        $downloader = $this->getMock('Downloader', array('download'));
+        $downloader = $this->getMock('\RssExtend\Downloader', array('download'));
         $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
         $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
         $downloader->expects($this->at(2))->method('download')->will($this->returnValue($item1Html));
@@ -173,7 +173,7 @@ class FeedTest extends \PHPUnit_Framework_TestCase
     public function testRssExportSlashComments() {
         $feedString = file_get_contents(__DIR__ . '/Parser/feed.xml');
         $item1Html = file_get_contents(__DIR__ . '/Parser/item2.html');
-        $downloader = $this->getMock('Downloader', array('download'));
+        $downloader = $this->getMock('\RssExtend\Downloader', array('download'));
         $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
         $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
         $downloader->expects($this->at(2))->method('download')->will($this->returnValue($item1Html));
@@ -199,4 +199,48 @@ class FeedTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(0, substr_count('slash:comments', $xml));
     }
+
+    public function testSetGetCache ()
+    {
+        $feed = new Feed();
+        $feed->setMethod('dom');
+        $feed->setCache($mock = $this->getMock('\Zend\Cache\Storage\Adapter\Filesystem'));
+        $this->assertEquals($mock, $feed->getCache());
+
+        $this->assertEquals($mock, $feed->getParser()->getDownloader()->getCache());
+    }
+
+    public function testRssExportMedia() {
+        $feedString = file_get_contents(__DIR__ . '/Parser/feed.xml');
+        $item1Html = file_get_contents(__DIR__ . '/Parser/item2.html');
+        $downloader = $this->getMock('\RssExtend\Downloader', array('download'));
+        $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
+        $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
+        $downloader->expects($this->at(2))->method('download')->will($this->returnValue($item1Html));
+
+        $imageSize = new \RssExtend\ImageSize();
+        $imageSize->setDownloader($downloader);
+
+        $config = new \Zend\Config\Config(array(
+                                               'name' => $name = 'test',
+                                               'url' => $url = 'http://localhost',
+                                               'method' => 'dom',
+                                               'dom' => array(
+                                                   'content' => '.content p',
+                                                   'image' => '.image img'
+                                               ),
+                                               'postProcess' => array(
+                                                   'staticImage' => 'http://localhost'
+                                               )
+                                          ));
+        $feed = new Feed('test', $config);
+        $feed->getParser()->setDownloader($downloader);
+        $feed->getParser()->setImageSize($imageSize);
+
+        $result = $feed->getUpdatedFeed();
+        $xml = $result->export('rss');
+
+        $this->assertContains('<media:thumbnail url="http://localhost/image.jpg" width="100" height="100"/>', $xml);
+    }
+
 }

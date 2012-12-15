@@ -63,7 +63,7 @@ class Downloader
     /**
      * @param \Zend\Cache\Storage\Adapter\AbstractAdapter $cache
      */
-    public function setCache (\Zend\Cache\Storage\Adapter\AbstractAdapter $cache)
+    public function setCache (\Zend\Cache\Storage\Adapter\AbstractAdapter $cache = null)
     {
         $this->cache = $cache;
     }
@@ -80,7 +80,7 @@ class Downloader
      * @param string $url
      * @return string
      */
-    public function download ($url, $cached = true)
+    public function download ($url, $cached = true, $saveToFile = null)
     {
         $key = 'url' . crc32($url);
 
@@ -104,10 +104,10 @@ class Downloader
 
                 $downloadMethod = null;
                 if (function_exists('curl_init') && substr($url, 0, 4) == 'http') {
-                    $content = $this->downloadCurl($url);
+                    $content = $this->downloadCurl($url, $saveToFile);
                     $downloadMethod = 'curl';
                 } else {
-                    $content = $this->downloadFileGetContents($url);
+                    $content = $this->downloadFileGetContents($url, $saveToFile);
                     $downloadMethod = 'file_get_contents';
                 }
 
@@ -116,7 +116,6 @@ class Downloader
                     break;
                 }
             }
-
 
             if ($content) {
                 $this->sessionCache[$key] = $content;
@@ -132,22 +131,40 @@ class Downloader
     }
 
     /**
-     * @param $url
+     * @param string $url
+     * @param string $saveToFile
      * @return mixed
      */
-    private function downloadCurl ($url)
+    private function downloadCurl ($url, $saveToFile)
     {
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_TIMEOUT, 5);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
+        if ($saveToFile) {
+            curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
+        }
+
         $data = curl_exec($curl);
         curl_close($curl);
+
+        if ($saveToFile) {
+            $fp = fopen($saveToFile, 'w');
+            fwrite($fp, $data);
+            fclose($fp);
+            $data = true;
+        }
+
         return $data;
     }
 
-    private function downloadFileGetContents ($url)
+    /**
+     * @param string $url
+     * @param string $saveToFile
+     * @return string
+     */
+    private function downloadFileGetContents ($url, $saveToFile)
     {
         $timeout = array(
             'http' => array(
@@ -156,7 +173,14 @@ class Downloader
         );
 
         $context = stream_context_create($timeout);
-        return file_get_contents($url, null, $context);
+        $content = file_get_contents($url, null, $context);
+
+        if ($saveToFile) {
+            file_put_contents($saveToFile, $content);
+            $content = true;
+        }
+
+        return $content;
 
     }
 }

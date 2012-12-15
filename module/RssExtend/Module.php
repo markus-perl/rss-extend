@@ -15,9 +15,15 @@ use Zend\Cache\StorageFactory;
 
 use RssExtend\Requirement\PhpVersion;
 use RssExtend\Requirement\CacheWriteable;
+use RssExtend\Requirement\ModCurl;
+
 
 class Module
 {
+
+    protected $cache;
+
+
     public function onBootstrap (MvcEvent $e)
     {
         if ('' == ini_get('date.timezone')) {
@@ -29,7 +35,13 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        $this->checkRequirements($e);
+        $e->getTarget()->getEventManager()->attach('dispatch',array($this, 'checkRequirements'), 100);
+
+        $app         = $e->getApplication();
+        $locator     = $app->getServiceManager();
+        $this->cache = $locator->get('Zend\Cache\Storage\Adapter\Filesystem');
+
+
     }
 
     public function checkRequirements (MvcEvent $e)
@@ -40,6 +52,7 @@ class Module
 
         $requirements[] = new PhpVersion();
         $requirements[] = new CacheWriteable($cache->getOptions()->getCacheDir());
+        $requirements[] = new ModCurl();
 
         foreach ($requirements as $requirement) {
             if (false == $requirement->checkRequirement()) {

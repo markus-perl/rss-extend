@@ -65,7 +65,7 @@ class FeedController extends AbstractActionController
         $cache = $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
 
         $time = time();
-        $xml = $cache->getItem($cacheKey = 'xml' . crc32($feed->getId() . ($time - $time % 300)));
+        $xml = $cache->getItem($cacheKey = 'xml' . crc32($feed->getId() . ($time - $time % 3)));
 
         if (false == $xml) {
             $downloader = $feed->getParser()->getDownloader();
@@ -75,6 +75,7 @@ class FeedController extends AbstractActionController
 
             $link = $this->getServerUrl() . $this->url()->fromRoute('feed', array('id' => $feed->getId()));
             $feedWriter->setFeedLink($link, 'rss');
+
             $xml = $feedWriter->export('rss', true);
             $cache->setItem($cacheKey, $xml);
         }
@@ -107,7 +108,6 @@ class FeedController extends AbstractActionController
         $cache = $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
 
         $downloader = $feed->getParser()->getDownloader();
-        $downloader->setCache($cache);
         $downloader->setSleep(100000, 1000000);
 
         $entries = $feed->getUpdatedFeed();
