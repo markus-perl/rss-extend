@@ -11,17 +11,17 @@ class project::nginx {
 	    owner => root,
 	    group => root,
 	    mode => 644,
-	    source => "/tmp/vagrant-puppet/modules-0/project/templates/nginx/fastcgi.conf"
+	    source => "/tmp/vagrant-puppet/modules-0/project/files/nginx/fastcgi.conf"
 	}
-	
+
 	file { "/etc/nginx/sites-enabled/default":
 		require => File['/etc/nginx/fastcgi.conf'],
 	    owner => root,
 	    group => root,
 	    mode => 644,
-	    source => "/tmp/vagrant-puppet/modules-0/project/templates/nginx/sites-enabled/default",
+	    source => "/tmp/vagrant-puppet/modules-0/project/files/nginx/sites-enabled/default",
 	}
-	
+
 	exec { "/etc/init.d/nginx restart":
 		require => File['/etc/nginx/sites-enabled/default'],
 	}

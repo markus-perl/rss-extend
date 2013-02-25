@@ -5,5 +5,5 @@ class Version
 {
     const ID = '2.0';
 
-    const NAME = 'RssExtend';
+    const NAME = 'rss-extend';
 }
