@@ -1,10 +1,10 @@
 rss-extend
 ==========
 
-rss-extend is written in PHP using Zend Framework 2. rss-extend takes a rss feed and injects it's missing content.
-This is done by following the url in feed  entries and grabbing the content with a simple css selector.
-if you run rss-extend on a public host the feeds can be added to any reader including http://www.google.com/reader
-The usage of rss-extend is granted for private use only.
+rss-extend is written in PHP using Zend Framework 2. rss-extend takes a rss feed and injects its missing content.
+This is done by following the url in feed entries and grabbing the content with a simple css selector.
+If you run rss-extend on a public host the feeds can be added to any reader including Google Reader (http://www.google.com/reader).
+Rss-extend is for private use only.
 
 
 Requirements
@@ -18,8 +18,8 @@ Requirements
 Installation and Downloads
 --------------------------
 
-Download the latest source code and extract it to your web dir. If you're using apache make sure the .htaccess file is parsed. An example config for nginx
-can be found at puppet/modules/project/templates/nginx/sites-enabled/default.
+Download the latest source code and extract it to your web dir. If you're using apache make sure the .htaccess file is parsed.
+An example config for nginx can be found at puppet/modules/project/files/nginx/sites-enabled/default.
 
 Adding a Feed
 -------------
@@ -62,11 +62,12 @@ Available Pre Processors
 Development
 ----------
 
-* Checkout repository
-* Install vagrant and then run
++ Checkout repository
++ Install vagrant and then run
 
-    $ vagrant up
-    open http://vagrant:8080 in your browser
+        $ vagrant up
+
++ now open http://vagrant:8080 in your browser
 
 
 Testing
@@ -80,4 +81,4 @@ To run the tests ssh to your vagrant machine and enter:
 Contact
 -------
 * Github: [http://www.github.com/markus-perl/rss-extend](http://www.github.com/markus-perl/rss-extend)
-* E-Mail: markus <at> open-mmx.de
+* E-Mail: markus (at) open-mmx.de
