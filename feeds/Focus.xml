@@ -12,6 +12,9 @@
         <postProcess>
             <mobilizer></mobilizer>
             <removeAttribs></removeAttribs>
+            <summary>
+                <prepend></prepend>
+            </summary>
         </postProcess>
 	</focus>
 </configdata>

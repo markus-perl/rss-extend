@@ -11,6 +11,9 @@
 		<postProcess>
             <mobilizer></mobilizer>
             <removeAttribs></removeAttribs>
-		</postProcess>
+            <summary>
+                <prepend></prepend>
+            </summary>
+        </postProcess>
 	</abendzeitung>
 </configdata>

@@ -180,6 +180,11 @@ abstract class AbstractParser
             if ($content) {
                 $content = str_replace(']]>', '', $content);
 
+                $plainContent = strip_tags($content);
+                if (mb_strlen($plainContent)) {
+                    $entry->setContentPlain($plainContent);
+                }
+
                 $imageUrl = $this->getImage($entry);
                 if ($imageUrl) {
                     $imageSize = $this->getImageSize();

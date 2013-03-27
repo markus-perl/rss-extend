@@ -13,6 +13,9 @@
             <mobilizer></mobilizer>
             <removeAttribs></removeAttribs>
             <relativeLinks>http://www.heise.de</relativeLinks>
+            <summary>
+                <prepend></prepend>
+            </summary>
         </postProcess>
     </heise>
 </configdata>

@@ -11,6 +11,9 @@
         <postProcess>
             <mobilizer></mobilizer>
             <removeAttribs></removeAttribs>
+            <summary>
+                <prepend></prepend>
+            </summary>
         </postProcess>
 	</golem>
 </configdata>
