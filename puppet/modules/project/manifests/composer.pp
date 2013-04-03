@@ -11,7 +11,7 @@ class project::composer {
 	  mode => 0755,
 	}
 
-	exec { "::composer download":
+	exec { "project::composer download":
 		command => "/usr/bin/wget ${downloadUrl}",
 		cwd => $targetDir,
 		require => File[$targetDir],
@@ -19,6 +19,7 @@ class project::composer {
 	}
 
 	file { "${targetDir}/composer.phar":
+	      require => [Exec["project::composer download"]],
     	  ensure => "file",
     	  owner => "root",
     	  group => "root",

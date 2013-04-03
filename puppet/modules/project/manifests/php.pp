@@ -39,22 +39,32 @@ class project::php {
 		require => Package["php5-dev"]
 	}
 
-	package { "spawn-fcgi":
-		require => [Package["php5-memcache"], Package["php-apc"], Package["php5-curl"], Package["php5-dev"], Package["php5-xdebug"], Package["php-pear"]],
-		ensure => installed,
-	}
+    package { "php5-fpm":
+    		require => Class['project::apt'],
+    }
 
-	file { "/usr/bin/php5-spawn":
-		require => Package["spawn-fcgi"],
-	    owner => root,
-	    group => root,
-	    mode => 555,
-	    source => "/tmp/vagrant-puppet/modules-0/project/files/php/php5-spawn.sh"
-	}
+   file { "/etc/php5/fpm/pool.d/www.conf":
+        require => Package["php5-fpm"],
+        owner => root,
+        group => root,
+        mode => 644,
+        source => "puppet:///modules/project/php/www.conf"
+    }
 
-
-	exec { "/usr/bin/php5-spawn":
-		require => [File["/usr/bin/php5-spawn"]]
-	}
+    service { "php5-fpm":
+        subscribe => [
+            Package["php5-fpm"],
+            Package["php5-cgi"],
+            Package["php5-cli"],
+            Package["php5-memcache"],
+            Package["php-apc"],
+            Package["php5-curl"],
+            Package["php5-dev"],
+            Package["php5-xdebug"],
+            Package["php-pear"],
+            File["/etc/php5/fpm/pool.d/www.conf"],
+        ],
+        ensure => "running",
+    }
 
 }

@@ -21,7 +21,7 @@ server {
     index index.php;
 
 	location ~ \.php$ {
-	    fastcgi_pass   localhost:9000;
+	    fastcgi_pass   unix:/var/run/php5-fpm.sock;
 	    fastcgi_read_timeout 240;
 	    fastcgi_send_timeout 240;
 		include        fastcgi.conf;

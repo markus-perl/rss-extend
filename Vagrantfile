@@ -1,12 +1,12 @@
 Vagrant::Config.run do |config|
 
     # Every Vagrant virtual environment requires a box to build off of.
-    config.vm.box = "mex_v2"
-    config.vm.box_url = "http://dl.dropbox.com/u/32252351/mex_v2.box"
-
-    config.ssh.max_tries = 300
+    config.vm.box = "mex_v3"
+    config.vm.box_url = "http://dl.dropbox.com/u/32252351/mex_v3.box"
 
     config.vm.customize ["modifyvm", :id, "--memory", "512"]
+    config.vm.customize ["modifyvm", :id, "--nestedpaging", "off"]
+
 
     # Boot with a GUI so you can see the screen. (Default is headless)
     # config.vm.boot_mode = :gui

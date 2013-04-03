@@ -8,7 +8,7 @@ nbproject
 .settings
 composer.lock
 vendor
-feeds/
+feeds/*.xml
 !feeds/Seniorbook.xml
 zfcache-*
 *.tar.gz
