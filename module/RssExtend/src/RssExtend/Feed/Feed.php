@@ -220,6 +220,8 @@ class Feed
             $extensions = \Zend\Feed\Writer\Writer::getExtensionManager();
             $extensions->setInvokableClass('MediaEntry', 'RssExtend\Feed\Writer\Extension\Media\Entry');
             $extensions->setInvokableClass('MediaRendererEntry', 'RssExtend\Feed\Writer\Extension\Media\Renderer\Entry');
+            $extensions->setInvokableClass('MediaRendererFeed', 'RssExtend\Feed\Writer\Extension\Media\Renderer\Feed');
+
             \Zend\Feed\Writer\Writer::registerExtension('Media');
         }
     }
