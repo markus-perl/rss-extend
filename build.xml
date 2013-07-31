@@ -33,6 +33,7 @@
             </tarfileset>
             <tarfileset dir="${source}/vendor" prefix="/${folderName}/vendor">
                 <include name="composer/**"/>
+                <include name="urlToAbsolute/**"/>
                 <include name="zendframework/zendframework/library/**"/>
                 <include name="autoload.php"/>
             </tarfileset>

@@ -191,7 +191,7 @@ abstract class AbstractParser
                     $size = $imageSize->getSizeByUrl($imageUrl);
                     $entry->setMediaThumbnail($imageUrl, $size['x'], $size['y']);
 
-                    $imageTag = '<p><img src="' . $imageUrl . '" /></p>';
+                    $imageTag = '<p><img src="' . $imageUrl . '"/></p>';
                     $content = $imageTag . $content;
                 }
 

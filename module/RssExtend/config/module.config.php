@@ -122,7 +122,6 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
-    'feed_dir' => '/tmp',
     'view_helpers' => array(
         'invokables' => array(
             'headerButton' => 'RssExtend\Helper\HeaderButton'

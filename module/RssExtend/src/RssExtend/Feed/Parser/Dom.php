@@ -3,6 +3,8 @@ namespace RssExtend\Feed\Parser;
 
 use \Zend\Validator\Uri;
 
+require_once __DIR__ . '/../../../../../../vendor/urlToAbsolute/url_to_absolute.php';
+
 class Dom extends AbstractParser
 {
 
@@ -107,8 +109,18 @@ class Dom extends AbstractParser
 
             if (count($results)) {
                 $imageUrl = $results->current()->getAttribute('src');
+
                 if ($imageUrl) {
-                    return $imageUrl;
+
+                    if (substr($imageUrl, 0, 7) == 'http://' || substr($imageUrl, 0, 8) == 'https://')
+                    {
+                        return $imageUrl;
+                    }
+                    else
+                    {
+                        return url_to_absolute($entry->getLink(), $imageUrl);
+                    }
+
                 }
             }
         }

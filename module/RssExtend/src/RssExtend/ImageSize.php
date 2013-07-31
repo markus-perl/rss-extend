@@ -71,7 +71,7 @@ class ImageSize
             );
         }
 
-        $tmpFile = tempnam('rssExtend', 'image');
+        $tmpFile = tempnam(__DIR__ . '/../../../../tmp', 'image');
 
         $size = array(
             'x' => 100,
@@ -79,8 +79,8 @@ class ImageSize
         );
 
         if ($this->getDownloader()->download($url, false, $tmpFile)) {
-            $imageSize = getimagesize($tmpFile);
             if (file_exists($tmpFile)) {
+                $imageSize = getimagesize($tmpFile);
                 unlink($tmpFile);
             }
 

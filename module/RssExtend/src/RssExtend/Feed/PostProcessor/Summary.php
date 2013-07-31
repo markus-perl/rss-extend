@@ -68,7 +68,7 @@ class Summary extends AbstractPostProcessor
 
     public function process (Entry $entry)
     {
-        $text = $entry->getPlainContent();
+        $text = $entry->getContent();
         $countOrig = mb_strlen($text);
 
         $text = $this->normalizeText($text);

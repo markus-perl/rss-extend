@@ -1,5 +1,6 @@
 <?php
 namespace RssExtend\Feed;
+ini_set('display_errors', 1);
 
 class Config extends \Zend\Config\Config
 {
@@ -19,7 +20,13 @@ class Config extends \Zend\Config\Config
 
     public function __construct ($directory)
     {
-        parent::__construct(array(), true);
+        if (is_array($directory)) {
+            parent::__construct($directory, true);
+            return;
+        }
+        else {
+            parent::__construct(array(), true);
+        }
 
         $feedDirectory = realpath($directory);
         $this->directory = $feedDirectory;

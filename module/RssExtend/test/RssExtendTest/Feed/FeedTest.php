@@ -153,9 +153,6 @@ class FeedTest extends \PHPUnit_Framework_TestCase
                                                'dom' => array(
                                                    'content' => '.content p',
                                                    'image' => '.image img'
-                                               ),
-                                               'postProcess' => array(
-                                                   'staticImage' => 'http://localhost'
                                                )
                                           ));
         $feed = new Feed('test', $config);
@@ -228,9 +225,6 @@ class FeedTest extends \PHPUnit_Framework_TestCase
                                                'dom' => array(
                                                    'content' => '.content p',
                                                    'image' => '.image img'
-                                               ),
-                                               'postProcess' => array(
-                                                   'staticImage' => 'http://localhost'
                                                )
                                           ));
         $feed = new Feed('test', $config);

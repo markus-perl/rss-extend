@@ -12,3 +12,4 @@ feeds/*.xml
 !feeds/Seniorbook.xml
 zfcache-*
 *.tar.gz
+tmp/*
