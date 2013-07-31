@@ -16,7 +16,7 @@ class project::php {
 		ensure => installed,
 	}
 
-	package { 'php-apc':
+	package { 'php5-apc':
 		require => Package['php5-cgi'],
 		ensure => installed,
 	}
@@ -57,7 +57,7 @@ class project::php {
             Package["php5-cgi"],
             Package["php5-cli"],
             Package["php5-memcache"],
-            Package["php-apc"],
+            Package["php5-apc"],
             Package["php5-curl"],
             Package["php5-dev"],
             Package["php5-xdebug"],

@@ -1,24 +1,21 @@
-Vagrant::Config.run do |config|
+Vagrant.configure("2") do |config|
 
     # Every Vagrant virtual environment requires a box to build off of.
-    config.vm.box = "mex_v3"
-    config.vm.box_url = "http://dl.dropbox.com/u/32252351/mex_v3.box"
+    config.vm.box = "mex_v4"
+    config.vm.box_url = "https://dl.dropboxusercontent.com/u/32252351/mex_v4.box"
 
-    config.vm.customize ["modifyvm", :id, "--memory", "512"]
-    config.vm.customize ["modifyvm", :id, "--nestedpaging", "off"]
-
-
-    # Boot with a GUI so you can see the screen. (Default is headless)
-    # config.vm.boot_mode = :gui
-
-    # nfs Switch Mac OS-X and Linux
-    if RUBY_PLATFORM.downcase.include?("darwin") or RUBY_PLATFORM.downcase.include?("linux")
-  	    config.vm.network :hostonly, "33.33.33.10"
-  	    config.vm.share_folder("v-root", "/vagrant", ".")
+    config.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--nestedpaging", "off"]
+        vb.customize ["modifyvm", :id, "--cpus", "2"]
+        # vb.gui = true
     end
 
+    config.vm.network :private_network, ip: "33.33.33.10"
+    config.vm.synced_folder ".", "/vagrant", :nfs => true
+
 	#Forward a port from the guest to the host, which allows for outside computers to access the VM, whereas host only networking does not.
-	config.vm.forward_port 80, 8080 #nginx
+    config.vm.network :forwarded_port, guest: 80, host: 8080        #nginx
 
     # Puppet provision
     config.vm.provision :puppet, :module_path => "puppet/modules" do |puppet|

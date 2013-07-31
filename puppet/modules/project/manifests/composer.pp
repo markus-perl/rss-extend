@@ -33,6 +33,7 @@ class project::composer {
     }
 
     exec { "project::composer install":
+        environment => "COMPOSER_HOME=/home/vagrant",
         command => "/usr/bin/composer install",
         cwd => '/vagrant',
         require => [File["/usr/bin/composer"], Class["project::php"]],

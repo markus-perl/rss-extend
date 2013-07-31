@@ -13,3 +13,4 @@ feeds/*.xml
 zfcache-*
 *.tar.gz
 tmp/*
+.vagrant/
