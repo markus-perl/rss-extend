@@ -28,4 +28,31 @@
             <removeAttribs></removeAttribs>
         </postProcess>
     </seniorbook-aid-project>
+
+    <seniorbook-hot-topics>
+        <name>seniorbook.de Hot Topics</name>
+        <composer>
+            <url>http://www.seniorbook.de/themen</url>
+            <dom>
+                <teaserBox>
+                    <content>
+                        <a>#topTheme .firstArea .imgOverlayBottom a</a>
+                        <title>span.title</title>
+                    </content>
+                </teaserBox>
+            </dom>
+        </composer>
+
+        <method>dom</method>
+        <dom>
+            <xhtml>true</xhtml>
+            <content>.articleText</content>
+            <image>.topicImage img</image>
+        </dom>
+        <postProcess>
+            <mobilizer></mobilizer>
+            <removeAttribs></removeAttribs>
+        </postProcess>
+    </seniorbook-hot-topics>
+
 </configdata>

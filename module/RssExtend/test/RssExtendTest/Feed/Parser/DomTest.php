@@ -42,10 +42,10 @@ class DomTest extends \PHPUnit_Framework_TestCase
         $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
         $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
 
-
         $config = new \Zend\Config\Config(array());
 
         $feed = new Feed();
+        $feed->setUrl('/my/rss');
         $dom = new Dom($feed, $config);
         $dom->setDownloader($downloader);
 

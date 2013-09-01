@@ -5,4 +5,5 @@ class project {
 	class { 'project::php': }
 	class { 'project::nginx': }
     class { 'project::composer': }
+    class { 'project::ant': }
 }

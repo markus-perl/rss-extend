@@ -2,6 +2,7 @@
 namespace RssExtend\Feed;
 
 use RssExtend\Feed\Parser\AbstractParser;
+use RssExtend\Composer\Composer;
 
 class Feed
 {
@@ -55,6 +56,11 @@ class Feed
      * @var string
      */
     private $id;
+
+    /**
+     * @var \Zend\Config\Config
+     */
+    private $composerConfig;
 
     /**
      * @param string $id
@@ -204,6 +210,22 @@ class Feed
     }
 
     /**
+     * @param \Zend\Config\Config $composer
+     */
+    public function setComposerConfig($composer)
+    {
+        $this->composerConfig = $composer;
+    }
+
+    /**
+     * @return \Zend\Config\Config
+     */
+    public function getComposerConfig()
+    {
+        return $this->composerConfig;
+    }
+
+    /**
      * @param \Zend\Config\Config $config
      */
     public function __construct ($id = null, \Zend\Config\Config $config = null)
@@ -237,7 +259,7 @@ class Feed
         }
         $this->setName($config->name);
 
-        if (null === $config->url) {
+        if (null === $config->url && null == $config->composer) {
             throw new Exception\RuntimeException('url not set');
         }
         $this->setUrl($config->url);
@@ -252,6 +274,10 @@ class Feed
 
         if ($config->preProcess) {
             $this->setPreProcess($config->preProcess);
+        }
+
+        if ($config->composer) {
+            $this->setComposerConfig($config->composer);
         }
 
         $method = $config->method;

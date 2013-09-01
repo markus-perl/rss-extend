@@ -1,11 +1,13 @@
 <?php
 namespace RssExtend\Feed\Parser;
 
-use RssExtend\Feed\Feed;
 use RssExtend\Downloader;
 use RssExtend\Exception\DownloadException;
+use RssExtend\Exception;
+use RssExtend\Feed\Feed;
 use RssExtend\ImageSize;
-use \Zend\Config\Config;
+use Zend\Config\Config;
+use RssExtend\Feed\Source;
 
 abstract class AbstractParser
 {
@@ -33,7 +35,7 @@ abstract class AbstractParser
     /**
      * @param \RssExtend\ImageSize $imageSize
      */
-    public function setImageSize ($imageSize)
+    public function setImageSize($imageSize)
     {
         $this->imageSize = $imageSize;
     }
@@ -41,7 +43,7 @@ abstract class AbstractParser
     /**
      * @return \RssExtend\ImageSize
      */
-    public function getImageSize ()
+    public function getImageSize()
     {
         if (null === $this->imageSize) {
             $this->imageSize = new ImageSize();
@@ -59,7 +61,7 @@ abstract class AbstractParser
     /**
      * @param Downloader $downloader
      */
-    public function setDownloader ($downloader)
+    public function setDownloader($downloader)
     {
         $this->downloader = $downloader;
     }
@@ -67,7 +69,7 @@ abstract class AbstractParser
     /**
      * @return Downloader
      */
-    public function getDownloader ()
+    public function getDownloader()
     {
         if (null === $this->downloader) {
             $this->setDownloader(new Downloader());
@@ -81,7 +83,7 @@ abstract class AbstractParser
      * @param string $link
      * @return string
      */
-    protected function getCacheKey ($link, $prefix = 'feed')
+    protected function getCacheKey($link, $prefix = 'feed')
     {
         return $prefix . '_' . crc32($link);
     }
@@ -90,7 +92,7 @@ abstract class AbstractParser
      * @param \RssExtend\Feed\Feed $feed
      * @param Config $config
      */
-    public function __construct (Feed $feed, Config $config = null)
+    public function __construct(Feed $feed, Config $config = null)
     {
         $this->feed = $feed;
 
@@ -103,10 +105,32 @@ abstract class AbstractParser
     /**
      * @return \Zend\Feed\Writer\Feed
      */
-    public function fetchFeed ()
+    public function fetchFeed()
     {
-        $feedContent = $this->getDownloader()->download($this->feed->getUrl(), false);
-        $feed = \Zend\Feed\Reader\Reader::importString($feedContent, null, 0);
+        $parsers = array(
+            new Source\Composer(),
+            new Source\Rss()
+        );
+
+        $feedContent = null;
+
+        /* @var Source\AbstractSource $parser */
+        foreach ($parsers as $parser) {
+            $parser->setDownloader($this->getDownloader());
+            $parser->setCache($this->feed->getCache());
+            $parser->setFeed($this->feed);
+
+            if ($parser->isConfigAvailable()) {
+                $feedContent = $parser->getRss();
+                break;
+            }
+        }
+
+        if (null === $feedContent) {
+            throw new Exception\RuntimeException('empty feed');
+        }
+
+        $feed = \Zend\Feed\Reader\Reader::importString($feedContent);
 
         return $this->makeWriteable($feed);
     }
@@ -115,7 +139,7 @@ abstract class AbstractParser
      * @param \Zend\Feed\Reader\Feed\FeedInterface $origFeed
      * @return \Zend\Feed\Writer\Feed
      */
-    public function makeWriteable (\Zend\Feed\Reader\Feed\FeedInterface $origFeed)
+    public function makeWriteable(\Zend\Feed\Reader\Feed\FeedInterface $origFeed)
     {
         $updatedFeed = new \Zend\Feed\Writer\Feed();
 
@@ -164,7 +188,7 @@ abstract class AbstractParser
     /**
      * @return \Zend\Feed\Writer\Feed
      */
-    public function getUpdatedFeed (\Zend\Feed\Writer\Feed $feed)
+    public function getUpdatedFeed(\Zend\Feed\Writer\Feed $feed)
     {
 
         /* @var \Zend\Feed\Writer\Entry $entry */
@@ -203,12 +227,12 @@ abstract class AbstractParser
         return $feed;
     }
 
-    abstract protected function getContent (\Zend\Feed\Writer\Entry $entry);
+    abstract protected function getContent(\Zend\Feed\Writer\Entry $entry);
 
     /**
      * @return string
      */
-    protected function getImage (\Zend\Feed\Writer\Entry $entry)
+    protected function getImage(\Zend\Feed\Writer\Entry $entry)
     {
         return null;
     }

@@ -27,6 +27,7 @@ class Bootstrap
     public static function init()
     {
         define('APPLICATION_ENV', 'testing');
+        date_default_timezone_set('Europe/Berlin');
 
         // Load the user-defined test configuration file, if it exists; otherwise, load
         if (is_readable(__DIR__ . '/TestConfig.php')) {

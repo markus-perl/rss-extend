@@ -2,6 +2,8 @@
 namespace RssExtend\Feed;
 use RssExtend\Feed\Config;
 use RssExtend\Feed\Feed;
+use RssExtend\Composer\Composer;
+
 
 class Collection implements \Iterator, \Countable
 {
@@ -16,6 +18,11 @@ class Collection implements \Iterator, \Countable
      * @var array[]Feed
      */
     private $data = array();
+
+    /**
+     * @var Composer
+     */
+    private $composer = null;
 
     /**
      * @param Feed $feed
@@ -134,4 +141,22 @@ class Collection implements \Iterator, \Countable
     {
         return $this->cache;
     }
+
+    /**
+     * @param \RssExtend\Composer\Composer $composer
+     */
+    public function setComposer($composer)
+    {
+        $this->composer = $composer;
+    }
+
+    /**
+     * @return \RssExtend\Composer\Composer
+     */
+    public function getComposer()
+    {
+        return $this->composer;
+    }
+
+
 }
