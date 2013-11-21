@@ -1,0 +1,65 @@
+body {
+    padding-top: 50px;
+}
+
+.starter-template {
+    padding: 40px 15px;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    float: right;
+}
+
+.background-image {
+    background-image: url('../images/background.jpg');
+    min-height: 450px;
+    background-size: cover;
+    color: white;
+    padding-top: 50px;
+    font-size: 130%;
+    font-weight: bold;
+}
+
+.white {
+    background-color: #ffffff;
+    padding-top: 100px;
+}
+
+.white h1 {
+    padding-bottom: 50px;
+}
+
+.accordion-group {
+    margin-bottom: 2px;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.accordion-heading .accordion-toggle {
+    display: block;
+    padding: 8px 15px;
+}
+
+.preview .date {
+    font-size: 80%;
+    color: #aaaaaa;
+    line-height: 48px;
+}
+
+.preview img {
+    max-width: 100%;
+    width: 100%;
+}
+
+@media screen and (min-width: 1400px) {
+    .background-image {
+        min-height: 550px;
+        padding-top: 150px;
+    }
+}

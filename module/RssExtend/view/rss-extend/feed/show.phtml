@@ -1,29 +1,55 @@
 <?php $this->headTitle()->prepend($feed->getName()); ?>
 
-<div data-role="header">
-    <?php echo $this->headerButton($this->translate('Back'), $this->url('home'), 'arrow-l', \RssExtend\Helper\HeaderButton::LEFT,
-    array('data-rel' => 'back')); ?>
-    <h1><?php echo $this->translate($feed->getName()); ?></h1>
-</div>
 
 <?php $url = $serverUrl . $this->url('feed', array(
-                                                        'id' => $feed->getId(),
-                                                        'action' => 'rss'
-                                                   )); ?>
-<div data-role="content">
-    <div class="content-primary">
-        <div data-role="fieldcontain">
-            <label for="link"><?php echo $this->translate('Link'); ?></label>
-            <input type="text" name="link" id="link" value="<?php echo $url; ?>"/>
-        </div>
+                                                  'id' => $feed->getId(),
+                                                  'action' => 'rss'
+                                             )); ?>
 
-        <a rel="external" href="<?php echo $url?>" data-role="button"><?php echo $this->translate(sprintf('Open URL %s', $url)); ?></a>
-        <a href="<?php echo $this->url('feed', array(
-                                                         'id' => $feed->getId(),
-                                                         'action' => 'preview'
-                                                    ))?>" data-role="button"><?php echo $this->translate(sprintf('Preview',
-            $url)); ?></a>
-        <a rel="external" href="http://www.google.com/ig/addtoreader?et=gEs490VY&source=atgs&feedurl=<?php echo urlencode($url); ?>"
-           data-role="button"><?php echo $this->translate('Add to Google Reader'); ?></a>
+
+<div class="jumbotron">
+    <div class="container">
+
+        <a class="btn btn-lg right" href="/#list" role="button"><?php echo $this->translate('Back to overview'); ?></a>
+
+        <h1><?php echo $this->translate($feed->getName()); ?></h1>
+
+        <p><?php echo $this->translate('RSS URL: ') ?><?php echo $url; ?></p>
+
+        <p>
+            <a class="btn show-feeds btn-lg btn-primary" href="https://cloud.feedly.com/#subscription%2Ffeed%2F<?php echo urlencode($url); ?>"
+               role="button"><?php echo $this->translate('Add this feed to Feedly Reader'); ?></a>
+        </p>
+
+    </div>
+
+
+</div>
+</div>
+
+<div class="jumbotron white preview">
+    <div class="container">
+
+        <h1><?php echo $this->translate('Preview'); ?></h1>
+
+        <div id="myAccordion" class="accordion">
+            <?php foreach ($entries as $id => $entry): ?>
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a href="#collapse<?php echo $id; ?>" data-parent="#myAccordion" data-toggle="collapse"
+                           class="accordion-toggle"><?php echo $entry->getTitle(); ?>
+                            <?php if ($entry->getDateCreated()): ?>
+                                <span class="right date"><?php echo $entry->getDateCreated()->format('Y-m-d h:i'); ?></span>
+                            <?php endif; ?>
+                        </a>
+                    </div>
+                    <div class="accordion-body collapse" id="collapse<?php echo $id; ?>">
+                        <div class="accordion-inner">
+                            <p><?php echo trim($entry->getContent()); ?></p>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>

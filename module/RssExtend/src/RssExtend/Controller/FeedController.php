@@ -41,9 +41,18 @@ class FeedController extends AbstractActionController
 
         $serverUrl = $this->getServerUrl();
 
+        /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
+        $cache = $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
+
+        $downloader = $feed->getParser()->getDownloader();
+        $downloader->setSleep(100000, 1000000);
+
+        $entries = $feed->getUpdatedFeed();
+
         return new ViewModel(array(
                                   'feed' => $feed,
-                                  'serverUrl' => $serverUrl
+                                  'serverUrl' => $serverUrl,
+                                  'entries' => $entries
                              ));
     }
 
@@ -88,34 +97,5 @@ class FeedController extends AbstractActionController
         $this->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/rss+xml; charset=utf-8');
 
         return $viewModel;
-    }
-
-    public function previewAction ()
-    {
-        $id = $this->getEvent()->getRouteMatch()->getParam('id');
-
-        /* @var \RssExtend\Feed\Collection $collection */
-        $collection = $this->getServiceLocator()->get('RssExtend\Feed\Collection');
-
-        $feed = $collection->getById($id);
-
-        if (null === $feed) {
-            $this->getResponse()->setStatusCode(404);
-            return;
-        }
-
-        /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
-        $cache = $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
-
-        $downloader = $feed->getParser()->getDownloader();
-        $downloader->setSleep(100000, 1000000);
-
-        $entries = $feed->getUpdatedFeed();
-
-
-        return new ViewModel(array(
-                                  'feed' => $feed,
-                                  'entries' => $entries,
-                             ));
     }
 }

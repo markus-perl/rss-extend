@@ -1,31 +1,63 @@
 <?php $this->layout()->title = $this->translate('List of feeds avaiable'); ?>
 
-<div data-role="header">
-    <h1><?php echo $this->translate(\RssExtend\Version::NAME . ' - List of available feeds'); ?></h1>
+<div class="jumbotron">
+    <div class="container">
+        <h1><?php echo \RssExtend\Version::NAME; ?></h1>
+
+        <p>
+            <?php echo $this->translate('rss-extend takes a rss feed and injects its missing content.
+            This is done by following the url in feed entries and grabbing the content with a simple css selector.'); ?>
+        </p>
+    </div>
 </div>
 
-<div data-role="content">
-    <div class="content-primary">
-        <ul data-role="listview">
-            <?php $lastChar = ''; ?>
+<div class="background-image">
+    <div class="container">
 
-            <?php foreach ($availableFeeds as $feed): ?>
-            <?php $firstChar = strtoupper(substr($feed->getName(), 0, 1)); ?>
-            <?php if ($firstChar !== $lastChar): ?>
-                <?php $lastChar = $firstChar; ?>
-                <li data-role="list-divider">
-                    <?php echo strtoupper($firstChar); ?>
-                </li>
-                <?php endif; ?>
+        <div class="row">
+            <div class="col-lg-6">
+                <h2><?php echo $this->translate('View available Feeds'); ?></h2>
 
-            <li>
-                <a href="<?php echo $this->url('feed', array(
-                                                            'id' => $feed->getId(),
-                                                            'action' => 'show'
-                                                       )); ?>"><?php echo $feed->getName(); ?></a>
-            </li>
-            <?php endforeach; ?>
+                <p><?php echo $this->translate('Take a quick look on already added feeds.'); ?></p>
 
-        </ul>
+                <p>
+                    <a class="btn show-feeds btn-lg btn-warning" href="#" role="button"><?php echo $this->translate('Show available Feeds'); ?></a>
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <h2><?php echo $this->translate('Add own feed'); ?></h2>
+
+                <p><?php echo $this->translate('Use our simple assistant to add your own feed'); ?></p>
+
+                <p><i><?php echo $this->translate('Currently disabled'); ?></i></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="starter-template">
+    <a name="list"></a>
+    <div class="jumbotron white">
+        <div class="container">
+            <h1><?php echo $this->translate('List of available feeds'); ?></h1>
+
+            <div class="list-group center">
+                <?php $lastChar = ''; ?>
+
+                <?php foreach ($availableFeeds as $feed): ?>
+                    <?php $firstChar = strtoupper(substr($feed->getName(), 0, 1)); ?>
+                    <?php if ($firstChar !== $lastChar): ?>
+                        <?php $lastChar = $firstChar; ?>
+                        <h3><?php echo strtoupper($firstChar); ?></h3>
+                    <?php endif; ?>
+
+                    <a class="list-group-item" href="<?php echo $this->url('feed', array(
+                                                                                        'id' => $feed->getId(),
+                                                                                        'action' => 'show'
+                                                                                   )); ?>"><?php echo $feed->getName(); ?></a>
+                <?php endforeach; ?>
+
+            </div>
+        </div>
     </div>
 </div>
