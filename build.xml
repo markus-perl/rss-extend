@@ -23,6 +23,7 @@
                 <include name="EMPTY"/>
             </tarfileset>
             <tarfileset dir="${source}/feeds" prefix="/${folderName}/feeds">
+                <include name="Seniorbook.xml"/>
             </tarfileset>
             <tarfileset dir="${source}/module" prefix="/${folderName}/module">
             </tarfileset>

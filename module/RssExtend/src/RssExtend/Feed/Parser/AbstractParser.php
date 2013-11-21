@@ -32,6 +32,22 @@ abstract class AbstractParser
      */
     private $imageSize = null;
 
+
+    /**
+     * @param \Zend\Feed\Reader\Entry\EntryInterface $entry
+     * @return string
+     */
+    protected  function getUrl(\Zend\Feed\Writer\Entry $entry)
+    {
+        $url = $entry->getContent();
+        $validator = new \Zend\Uri\Http();
+        if ($url === null || $validator->isValid($url) === false) {
+            $url = $entry->getLink();
+        }
+
+        return trim($url);
+    }
+
     /**
      * @param \RssExtend\ImageSize $imageSize
      */

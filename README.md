@@ -3,8 +3,18 @@ rss-extend
 
 rss-extend is written in PHP using Zend Framework 2. rss-extend takes a rss feed and injects its missing content.
 This is done by following the url in feed entries and grabbing the content with a simple css selector.
-If you run rss-extend on a public host the feeds can be added to any reader including Google Reader (http://www.google.com/reader).
+If you run rss-extend on a public host the feeds can be added to any reader including Feedly Reader (http://www.feedly.com).
 Rss-extend is for private use only.
+
+
+News
+------------
+
+2013-11-21 - Readability Parser Integration
+    <method>readability</method>
+    <readability>
+        <token>fd6a28ec4af4e451c93cbab91234a10d9cb1b3f8</token>
+    </readability>
 
 
 Requirements

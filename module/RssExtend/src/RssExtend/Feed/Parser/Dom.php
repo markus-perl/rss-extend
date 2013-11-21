@@ -1,27 +1,10 @@
 <?php
 namespace RssExtend\Feed\Parser;
 
-use Zend\Validator\Uri;
-
 require_once __DIR__ . '/../../../../../../vendor/urlToAbsolute/url_to_absolute.php';
 
 class Dom extends AbstractParser
 {
-
-    /**
-     * @param \Zend\Feed\Reader\Entry\EntryInterface $entry
-     * @return string
-     */
-    private function getUrl(\Zend\Feed\Writer\Entry $entry)
-    {
-        $url = $entry->getContent();
-        $validator = new \Zend\Uri\Http();
-        if ($url === null || $validator->isValid($url) === false) {
-            $url = $entry->getLink();
-        }
-
-        return $url;
-    }
 
     /**
      * (non-PHPdoc)
@@ -29,8 +12,6 @@ class Dom extends AbstractParser
      */
     protected function getContent(\Zend\Feed\Writer\Entry $entry)
     {
-        $url = $this->getUrl($entry);
-
         $url = $this->getUrl($entry);
         $html = $this->getDownloader()->download($url);
 

@@ -1,7 +1,7 @@
 <?php
 namespace RssExtend\Feed\Parser;
 
-use \Zend\Validator\Uri;
+use RssExtend\Exception;
 
 class Trim extends AbstractParser
 {
@@ -17,7 +17,7 @@ class Trim extends AbstractParser
      * @param string $start
      * @return array[]int
      */
-    private function getOffsetPositions ($haystack, $needle, $start = null)
+    private function getOffsetPositions($haystack, $needle, $start = null)
     {
         $offsetPositions = array();
 
@@ -49,7 +49,7 @@ class Trim extends AbstractParser
      * @return int
      * @throws RssExtend_Worker_Exception
      */
-    private function getOffset ($haystack, $needle, $offset, $direction, $start = null)
+    private function getOffset($haystack, $needle, $offset, $direction, $start = null)
     {
         $offsetPositions = $this->getOffsetPositions($haystack, $needle, $start);
 
@@ -69,7 +69,7 @@ class Trim extends AbstractParser
      * @return string
      * @throws Exception\RuntimeException
      */
-    protected function getContent (\Zend\Feed\Writer\Entry $entry)
+    protected function getContent(\Zend\Feed\Writer\Entry $entry)
     {
         $url = $entry->getLink();
 
@@ -85,10 +85,14 @@ class Trim extends AbstractParser
             throw new Exception\RuntimeException('Invalid trim configuration. Config from incomplete');
         }
 
-        $start = $this->getOffset($page, $config->from->searchText, $config->from->offset, $config->from->direction) + strlen($config->from->searchText);
-        $end = $this->getOffset($page, $config->to->searchText, $config->to->offset, $config->to->direction, $start);
+        try {
+            $start = $this->getOffset($page, $config->from->searchText, $config->from->offset, $config->from->direction) + strlen($config->from->searchText);
+            $end = $this->getOffset($page, $config->to->searchText, $config->to->offset, $config->to->direction, $start);
+            $content = substr($page, $start, $end - $start);
 
-        $content = substr($page, $start, $end - $start);
+        } catch (Exception $e) {
+            $content = $e->getMessage();
+        }
 
         $content = trim($content);
 
