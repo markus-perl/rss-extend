@@ -7,7 +7,7 @@ If you run rss-extend on a public host the feeds can be added to any reader incl
 Rss-extend is for private use only.
 
 <p align="center">
-  <img src="https://github.com/markus-perl/rss-extend/blob/master/readme.files/php-strace.png?raw=true" alt="rss-extend screenshot"/>
+  <img src="https://raw.github.com/markus-perl/rss-extend/master/readme.files/screenshot.png" alt="rss-extend screenshot"/>
 </p>
 
 News
