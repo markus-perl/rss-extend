@@ -18,9 +18,10 @@ Vagrant.configure("2") do |config|
     config.vm.network :forwarded_port, guest: 80, host: 8080        #nginx
 
     # Puppet provision
-    config.vm.provision :puppet, :module_path => "puppet/modules" do |puppet|
+    config.vm.provision :puppet do |puppet|
         puppet.manifests_path = "puppet/manifests"
         puppet.manifest_file  = "vm.box.pp"
+        puppet.module_path = "puppet/modules"
     end
 
 end

@@ -1,8 +1,6 @@
 <?php
 namespace RssExtend\Feed\Parser;
 
-require_once __DIR__ . '/../../../../../../vendor/urlToAbsolute/url_to_absolute.php';
-
 class Readability extends AbstractParser
 {
 
@@ -24,7 +22,7 @@ class Readability extends AbstractParser
 
         $json = json_decode($this->getDownloader()->download($url));
 
-        if ($json && $json->content) {
+        if ($json && isset($json->content)) {
             return $json->content;
         }
 

@@ -1,8 +1,6 @@
 <?php
 namespace RssExtend\Feed\PostProcessor;
-use RssExtend\Feed\PostProcessor\AbstractPostProcessor;
 use \Zend\Feed\Writer\Entry;
-use \Zend\Dom\Query;
 
 class RelativeLinks extends AbstractPostProcessor
 {

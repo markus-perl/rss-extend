@@ -6,6 +6,9 @@ This is done by following the url in feed entries and grabbing the content with 
 If you run rss-extend on a public host the feeds can be added to any reader including Feedly Reader (http://www.feedly.com).
 Rss-extend is for private use only.
 
+<p align="center">
+  <img src="https://github.com/markus-perl/rss-extend/blob/master/readme.files/php-strace.png?raw=true" alt="rss-extend screenshot"/>
+</p>
 
 News
 ------------

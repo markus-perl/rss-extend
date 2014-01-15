@@ -1,20 +1,13 @@
 <?php
 namespace RssExtend\Feed\PostProcessor;
-use RssExtend\Feed\PostProcessor\AbstractPostProcessor;
-use \Zend\Feed\Writer\Entry;
-use \Zend\Dom\Query;
+
+use Zend\Feed\Writer\Entry;
 
 class RemoveAttribs extends AbstractPostProcessor
 {
 
-    /**
-     * @param Entry $entry
-     * @return Entry
-     */
-    public function process (Entry $entry)
+    public function remove($content)
     {
-        $content = $entry->getContent();
-
         foreach (array(
                      'img',
                      'br',
@@ -49,8 +42,16 @@ class RemoveAttribs extends AbstractPostProcessor
             }
             $content = $this->extractBody($res);
         }
+        return $content;
+    }
 
-        $entry->setContent($content);
+    /**
+     * @param Entry $entry
+     * @return Entry
+     */
+    public function process(Entry $entry)
+    {
+        $entry->setContent($this->remove($entry->getContent()));
         return $entry;
     }
 

@@ -57,6 +57,10 @@ body {
     width: 100%;
 }
 
+.accordion-inner {
+    padding: 8px 15px;
+}
+
 @media screen and (min-width: 1400px) {
     .background-image {
         min-height: 550px;
