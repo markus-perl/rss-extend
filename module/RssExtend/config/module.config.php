@@ -44,6 +44,19 @@ return array(
                     ),
                 )
             ),
+            'image' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/image[/:url][/:hash]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'RssExtend\Controller\Image',
+                        'action' => 'index',
+                    ),
+                )
+            ),
             'home' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
@@ -103,7 +116,8 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'RssExtend\Controller\Index' => 'RssExtend\Controller\IndexController',
-            'RssExtend\Controller\Feed' => 'RssExtend\Controller\FeedController'
+            'RssExtend\Controller\Feed' => 'RssExtend\Controller\FeedController',
+            'RssExtend\Controller\Image' => 'RssExtend\Controller\ImageController'
         ),
     ),
     'view_manager' => array(

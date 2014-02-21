@@ -29,6 +29,7 @@ class Module
         if ('' == ini_get('date.timezone')) {
             date_default_timezone_set('Europe/Berlin');
         }
+        mb_internal_encoding('UTF-8');
 
         $e->getApplication()->getServiceManager()->get('translator');
         $eventManager = $e->getApplication()->getEventManager();

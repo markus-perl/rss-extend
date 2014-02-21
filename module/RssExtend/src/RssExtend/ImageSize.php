@@ -5,6 +5,8 @@ namespace RssExtend;
 class ImageSize
 {
 
+    const MAX_X = 1000;
+
     /**
      * @var \Zend\Cache\Storage\Adapter\Filesystem
      */
@@ -86,13 +88,18 @@ class ImageSize
 
             if ($imageSize) {
 
+                $width = min($imageSize[0], self::MAX_X);
+
+                $ratio = $imageSize[0] / $imageSize[1];
+                $height = round($width / $ratio);
+
                 $size = array(
-                    'x' => $imageSize[0],
-                    'y' => $imageSize[1]
+                    'x' => $width,
+                    'y' => $height
                 );
 
                 if ($this->getCache()) {
-                    $this->getCache()->setItem($key, $size['x'] . ':' . $size['y']);
+                    $this->getCache()->setItem($key, $width . ':' . $height);
                 }
             }
         }
