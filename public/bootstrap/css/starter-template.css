@@ -49,7 +49,16 @@ body {
 .preview .date {
     font-size: 80%;
     color: #aaaaaa;
-    line-height: 48px;
+    line-height: 60px;
+    padding-right: 10px;
+}
+
+.container .accordion-group {
+    position: relative;
+}
+
+.container .accordion-toggle {
+    float: left;
 }
 
 .preview img {

@@ -2,9 +2,9 @@
 <?php $timeZone = new DateTimeZone(date_default_timezone_get()); ?>
 
 <?php $url = $serverUrl . $this->url('feed', array(
-                                                  'id' => $feed->getId(),
-                                                  'action' => 'rss'
-                                             )); ?>
+        'id' => $feed->getId(),
+        'action' => 'rss'
+    )); ?>
 
 
 <div class="jumbotron">
@@ -35,13 +35,13 @@
         <div id="myAccordion" class="accordion">
             <?php foreach ($entries as $id => $entry): ?>
                 <div class="accordion-group">
-                    <div class="accordion-heading">
+                    <div class="accordion-heading clearfix">
                         <a href="#collapse<?php echo $id; ?>" data-parent="#myAccordion" data-toggle="collapse"
                            class="accordion-toggle"><?php echo $entry->getTitle(); ?>
-                            <?php if ($entry->getDateCreated()): ?>
-                                <span class="right date"><?php echo $entry->getDateCreated()->setTimeZone($timeZone)->format('Y-m-d H:i'); ?></span>
-                            <?php endif; ?>
                         </a>
+                        <?php if ($entry->getDateCreated()): ?>
+                            <a class="right date" target="_blank" href="<?php echo $entry->getLink(); ?>"><?php echo $entry->getDateCreated()->setTimeZone($timeZone)->format('Y-m-d H:i'); ?></a>
+                        <?php endif; ?>
                     </div>
                     <div class="accordion-body collapse" id="collapse<?php echo $id; ?>">
                         <div class="accordion-inner">

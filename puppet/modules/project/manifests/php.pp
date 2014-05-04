@@ -16,6 +16,11 @@ class project::php {
 		ensure => installed,
 	}
 
+    package { 'php5-gd':
+        require => Package['php5-cgi'],
+        ensure => installed,
+    }
+
 	package { 'php5-curl':
 		require => Package['php5-cgi'],
 		ensure => installed,

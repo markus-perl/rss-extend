@@ -22,6 +22,7 @@ class FeedController extends AbstractActionController
     private function getServerUrl()
     {
         $serverUrl = ((isset($_SERVER['HTTPS']) && mb_strlen($_SERVER['HTTPS']) > 0 && $_SERVER['HTTPS'] != 'off') ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
+        file_put_contents('data/cache/server-url', $serverUrl);
         return $serverUrl;
     }
 
@@ -40,9 +41,6 @@ class FeedController extends AbstractActionController
         }
 
         $serverUrl = $this->getServerUrl();
-
-        /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
-        $cache = $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
 
         $entries = $feed->getUpdatedFeed();
 

@@ -13,8 +13,13 @@ class Image
     {
         $host = null;
         if (isset($_SERVER['HTTP_HOST'])) {
-            $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+            $protocol = ((!empty($_SERVER['HTTPS']) && mb_strlen($_SERVER['HTTPS']) > 0 && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
             $host = $protocol . $_SERVER['HTTP_HOST'];
+        } else {
+            $serverUrlFile = file_get_contents('data/cache/server-url');
+            if (file_exists($serverUrlFile)) {
+                $host = file_get_contents($serverUrlFile);
+            }
         }
 
         if ($url && $host && substr_count($url, $host)) {
