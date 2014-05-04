@@ -16,7 +16,7 @@ foreach ($collection as $feed) {
 
     $downloader = $feed->getParser()->getDownloader();
     $downloader->setCache($cache);
-    $downloader->setSleep(1000000, 10000000); // 1 - 10 sec
+    $downloader->setSleep(500000, 5000000); // 0.5 - 5 sec
 
     try {
         $entries = $feed->getUpdatedFeed();

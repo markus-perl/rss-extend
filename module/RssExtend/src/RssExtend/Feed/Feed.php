@@ -65,7 +65,7 @@ class Feed
     /**
      * @param string $id
      */
-    public function setId ($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
@@ -73,7 +73,7 @@ class Feed
     /**
      * @return string
      */
-    public function getId ()
+    public function getId()
     {
         return $this->id;
     }
@@ -81,7 +81,7 @@ class Feed
     /**
      * @param string $method
      */
-    public function setMethod ($method, \Zend\Config\Config $methodConfig = null)
+    public function setMethod($method, \Zend\Config\Config $methodConfig = null)
     {
         $this->method = $method;
         $this->methodConfig = $methodConfig;
@@ -90,7 +90,7 @@ class Feed
     /**
      * @return string
      */
-    public function getMethod ()
+    public function getMethod()
     {
         return $this->method;
     }
@@ -98,7 +98,7 @@ class Feed
     /**
      * @return \Zend\Config\Config
      */
-    public function getMethodConfig ()
+    public function getMethodConfig()
     {
         return $this->methodConfig;
     }
@@ -106,7 +106,7 @@ class Feed
     /**
      * @param string $encoding
      */
-    public function setEncoding ($encoding)
+    public function setEncoding($encoding)
     {
         $this->encoding = $encoding;
     }
@@ -114,7 +114,7 @@ class Feed
     /**
      * @return string
      */
-    public function getEncoding ()
+    public function getEncoding()
     {
         return $this->encoding;
     }
@@ -122,7 +122,7 @@ class Feed
     /**
      * @param string $name
      */
-    public function setName ($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
@@ -130,7 +130,7 @@ class Feed
     /**
      * @return string
      */
-    public function getName ()
+    public function getName()
     {
         return $this->name;
     }
@@ -138,7 +138,7 @@ class Feed
     /**
      * @param \RssExtend\Feed\Parser\AbstractParser $parser
      */
-    public function setParser ($parser)
+    public function setParser($parser)
     {
         $this->parser = $parser;
     }
@@ -146,7 +146,7 @@ class Feed
     /**
      * @return \RssExtend\Feed\Parser\AbstractParser
      */
-    public function getParser ()
+    public function getParser()
     {
         if (null === $this->parser) {
 
@@ -168,7 +168,7 @@ class Feed
     /**
      * @return \Zend\Feed\Writer\Feed
      */
-    public function getUpdatedFeed ()
+    public function getUpdatedFeed()
     {
         $origFeed = $this->getParser()->fetchFeed();
 
@@ -182,9 +182,45 @@ class Feed
 
         $feed->setTitle($feed->getTitle() . ' - ' . \RssExtend\Version::NAME);
 
+        $cache = $this->getCache();
+
         foreach ($feed as $entry) {
-            foreach ($this->getPostProcessors() as $postProcessor) {
-                $postProcessor->process($entry);
+            $id = 'entry' . crc32($entry->getLink());
+
+            $item = null;
+            if ($cache) {
+                $item = $cache->getItem($id);
+            }
+
+            if ($item) {
+                $item = unserialize($item);
+                foreach (array(
+                             'title',
+                             'link',
+                             'description',
+                             'dateModified',
+                             'dateCreated',
+                             'description',
+                             'content',
+                             'mediaThumbnail',
+                         ) as $attrib) {
+
+                    $getter = 'get' . ucfirst($attrib);
+                    $setter = 'set' . ucfirst($attrib);
+                    if ($item->$getter() !== null) {
+                        if ($item->$getter()) {
+                            $entry->$setter($item->$getter());
+                        }
+                    }
+                }
+            } else {
+                foreach ($this->getPostProcessors() as $postProcessor) {
+                    $postProcessor->process($entry);
+                }
+
+                if ($cache) {
+                    $cache->addItem($id, serialize($entry));
+                }
             }
         }
 
@@ -196,7 +232,7 @@ class Feed
     /**
      * @param string $url
      */
-    public function setUrl ($url)
+    public function setUrl($url)
     {
         $this->url = $url;
     }
@@ -204,7 +240,7 @@ class Feed
     /**
      * @return string
      */
-    public function getUrl ()
+    public function getUrl()
     {
         return $this->url;
     }
@@ -228,7 +264,7 @@ class Feed
     /**
      * @param \Zend\Config\Config $config
      */
-    public function __construct ($id = null, \Zend\Config\Config $config = null)
+    public function __construct($id = null, \Zend\Config\Config $config = null)
     {
         if ($config) {
             $this->parseConfig($config);
@@ -252,7 +288,7 @@ class Feed
      * @param \Zend\Config\Config $config
      * @throws Exception\RuntimeException
      */
-    public function parseConfig (\Zend\Config\Config $config)
+    public function parseConfig(\Zend\Config\Config $config)
     {
         if (null === $config->name) {
             throw new Exception\RuntimeException('name not set');
@@ -288,7 +324,7 @@ class Feed
     /**
      * @param \Zend\Config\Config $postProcess
      */
-    public function setPostProcess (\Zend\Config\Config $postProcess)
+    public function setPostProcess(\Zend\Config\Config $postProcess)
     {
         $this->postProcess = $postProcess;
     }
@@ -296,7 +332,7 @@ class Feed
     /**
      * @return \Zend\Config\Config
      */
-    public function getPostProcess ()
+    public function getPostProcess()
     {
         return $this->postProcess;
     }
@@ -304,7 +340,7 @@ class Feed
     /**
      * @param \Zend\Config\Config $postProcess
      */
-    public function setPreProcess (\Zend\Config\Config $postProcess)
+    public function setPreProcess(\Zend\Config\Config $postProcess)
     {
         $this->preProcess = $postProcess;
     }
@@ -312,7 +348,7 @@ class Feed
     /**
      * @return \Zend\Config\Config
      */
-    public function getPreProcess ()
+    public function getPreProcess()
     {
         return $this->preProcess;
     }
@@ -321,7 +357,7 @@ class Feed
      * @return array[]AbstractPostProcessor
      * @throws Exception\RuntimeException
      */
-    public function getPostProcessors ()
+    public function getPostProcessors()
     {
         if (null === $this->getPostProcess()) {
             return array();
@@ -345,7 +381,7 @@ class Feed
      * @return array[]AbstractPostProcessor
      * @throws Exception\RuntimeException
      */
-    public function getPreProcessors ()
+    public function getPreProcessors()
     {
         if (null === $this->getPreProcess()) {
             return array();
@@ -368,7 +404,7 @@ class Feed
     /**
      * @param \Zend\Cache\Storage\Adapter\Filesystem $cache
      */
-    public function setCache (\Zend\Cache\Storage\Adapter\Filesystem $cache = null)
+    public function setCache(\Zend\Cache\Storage\Adapter\Filesystem $cache = null)
     {
         $this->cache = $cache;
     }
@@ -376,7 +412,7 @@ class Feed
     /**
      * @return \Zend\Cache\Storage\Adapter\Filesystem
      */
-    public function getCache ()
+    public function getCache()
     {
         return $this->cache;
     }

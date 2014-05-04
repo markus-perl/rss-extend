@@ -3,7 +3,7 @@ namespace RssExtend;
 
 class Version
 {
-    const ID = '2.4';
+    const ID = '2.5';
 
     const NAME = 'rss-extend';
 }

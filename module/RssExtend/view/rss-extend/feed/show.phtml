@@ -1,5 +1,5 @@
 <?php $this->headTitle()->prepend($feed->getName()); ?>
-
+<?php $timeZone = new DateTimeZone(date_default_timezone_get()); ?>
 
 <?php $url = $serverUrl . $this->url('feed', array(
                                                   'id' => $feed->getId(),
@@ -17,7 +17,7 @@
         <p><?php echo $this->translate('RSS URL: ') ?><?php echo $url; ?></p>
 
         <p>
-            <a class="btn show-feeds btn-lg btn-primary" href="https://cloud.feedly.com/#subscription%2Ffeed%2F<?php echo urlencode($url); ?>"
+            <a class="btn btn-lg btn-primary" href="https://cloud.feedly.com/#subscription%2Ffeed%2F<?php echo urlencode($url); ?>"
                role="button"><?php echo $this->translate('Add this feed to Feedly Reader'); ?></a>
         </p>
 
@@ -39,7 +39,7 @@
                         <a href="#collapse<?php echo $id; ?>" data-parent="#myAccordion" data-toggle="collapse"
                            class="accordion-toggle"><?php echo $entry->getTitle(); ?>
                             <?php if ($entry->getDateCreated()): ?>
-                                <span class="right date"><?php echo $entry->getDateCreated()->format('Y-m-d h:i'); ?></span>
+                                <span class="right date"><?php echo $entry->getDateCreated()->setTimeZone($timeZone)->format('Y-m-d H:i'); ?></span>
                             <?php endif; ?>
                         </a>
                     </div>

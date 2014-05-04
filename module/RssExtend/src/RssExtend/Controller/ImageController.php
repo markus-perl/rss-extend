@@ -31,7 +31,7 @@ class ImageController extends AbstractActionController
         $delivered = false;
 
         $url = base64_decode($this->params()->fromRoute('url'));
-        $hash = $this->params()->fromRoute('hash');
+        $hash = substr($this->params()->fromRoute('hash'), 0, -4);
         $expectedHash = md5($url . gethostname() . 'RssExtend');
 
         /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
@@ -39,7 +39,7 @@ class ImageController extends AbstractActionController
 
         $downloader = new Downloader();
         $downloader->setCache($cache);
-        $downloader->setSleep(100000, 1000000);
+        $downloader->setSleep(50000, 500000);
 
         $url = utf8_decode($url);
         header('X-URL: ' . $url);
@@ -59,6 +59,10 @@ class ImageController extends AbstractActionController
                     $origImage = imagecreatefromstring($image);
                     if ($origImage) {
                         header('Content-Type: ' . $mime[0]);
+                        header('Pragma: public');
+                        header('Cache-Control: maxage=' . (86400 * 30));
+                        header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (86400 * 30)) . ' GMT');
+
                         $thumbnail = imagecreatetruecolor($width, $height);
                         imagecopyresampled($thumbnail, $origImage, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight);
                         $quality = 50;

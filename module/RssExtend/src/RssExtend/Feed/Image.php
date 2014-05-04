@@ -21,7 +21,8 @@ class Image
             return $url;
         }
 
-        return $host . '/image/' . urlencode(base64_encode($url)) . '/' . $this->hash($url);
+        return $host . '/image/' . urlencode(base64_encode($url)) . '/' . $this->hash($url) . '.jpg';
+
     }
 
 }

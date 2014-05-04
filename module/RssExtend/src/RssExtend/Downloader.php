@@ -141,6 +141,8 @@ class Downloader
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_TIMEOUT, 15);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 600);
+        curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
         if ($saveToFile) {
             curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);

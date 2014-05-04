@@ -1,5 +1,6 @@
 <?php
 namespace RssExtend\Feed\PostProcessor;
+
 use RssExtend\Feed\Image;
 use \Zend\Feed\Writer\Entry;
 
@@ -7,29 +8,49 @@ class ImageProxy extends AbstractPostProcessor
 {
 
     /**
-     * @param Entry $entry
-     * @return Entry
+     * @var \RssExtend\Feed\Image
      */
-    public function process (Entry $entry)
-    {
-        $dom = $this->getDom($entry->getContent());
-        $res = $dom->execute('img');
+    private $_imageHelper = null;
 
-        $imageHelper = new Image();
+    public function __construct()
+    {
+        $this->_imageHelper = new Image();
+    }
+
+    /**
+     * Replaces the src attribute with a link to our image proxy
+     *
+     * @param $text
+     * @return string
+     */
+    private function replaceSource($text)
+    {
+        $dom = $this->getDom($text);
+        $res = $dom->execute('img');
 
         /*
          * @var $element DOMElement
          */
         foreach ($res as $element) {
             $src = $element->getAttribute('src');
-            $element->setAttribute('src', $imageHelper->url($src));
+            $element->setAttribute('src', $this->_imageHelper->url($src));
         }
 
-        $entry->setContent($this->extractBody($res));
+        return $this->extractBody($res);
+    }
+
+    /**
+     * @param Entry $entry
+     * @return Entry
+     */
+    public function process(Entry $entry)
+    {
+        $entry->setContent($this->replaceSource($entry->getContent()));
+        $entry->setDescription($this->replaceSource($entry->getDescription()));
 
         if ($entry->getMediaThumbnail()) {
             $thumb = $entry->getMediaThumbnail();
-            $thumb['url'] = $imageHelper->url($thumb['url']);
+            $thumb['url'] = $this->_imageHelper->url($thumb['url']);
             $entry->setMediaThumbnail($thumb);
         }
 

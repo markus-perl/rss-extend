@@ -19,13 +19,13 @@ class FeedController extends AbstractActionController
     /**
      * @return string
      */
-    private function getServerUrl ()
+    private function getServerUrl()
     {
-        $serverUrl = ((isset($_SERVER['HTTPS'])) ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
+        $serverUrl = ((isset($_SERVER['HTTPS']) && mb_strlen($_SERVER['HTTPS']) > 0 && $_SERVER['HTTPS'] != 'off') ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
         return $serverUrl;
     }
 
-    public function showAction ()
+    public function showAction()
     {
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
 
@@ -44,19 +44,16 @@ class FeedController extends AbstractActionController
         /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
         $cache = $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
 
-        $downloader = $feed->getParser()->getDownloader();
-        $downloader->setSleep(100000, 1000000);
-
         $entries = $feed->getUpdatedFeed();
 
         return new ViewModel(array(
-                                  'feed' => $feed,
-                                  'serverUrl' => $serverUrl,
-                                  'entries' => $entries
-                             ));
+            'feed' => $feed,
+            'serverUrl' => $serverUrl,
+            'entries' => $entries
+        ));
     }
 
-    public function rssAction ()
+    public function rssAction()
     {
         $id = $this->getEvent()->getRouteMatch()->getParam('id');
 
@@ -79,7 +76,7 @@ class FeedController extends AbstractActionController
         if (false == $xml) {
             $downloader = $feed->getParser()->getDownloader();
             $downloader->setCache($cache);
-            $downloader->setSleep(100000, 1000000);
+            $downloader->setSleep(50000, 500000);
             $feedWriter = $feed->getUpdatedFeed();
 
             $link = $this->getServerUrl() . $this->url()->fromRoute('feed', array('id' => $feed->getId()));
@@ -90,8 +87,8 @@ class FeedController extends AbstractActionController
         }
 
         $viewModel = new ViewModel(array(
-                                        'xml' => $xml,
-                                   ));
+            'xml' => $xml,
+        ));
         $viewModel->setTerminal(true);
 
         $this->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/rss+xml; charset=utf-8');

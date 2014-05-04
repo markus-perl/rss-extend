@@ -1,13 +1,7 @@
 
 class project::nginx {
 
-	package { 'nginx':
-		ensure => installed,
-		require => Class['project::apt']
-	}
-
 	file { "/etc/nginx/fastcgi.conf":
-		require => Package['nginx'],
 	    owner => root,
 	    group => root,
 	    mode => 644,

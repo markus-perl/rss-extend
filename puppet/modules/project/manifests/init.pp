@@ -7,4 +7,5 @@ class project {
 	class { 'project::nginx': }
     class { 'project::composer': }
     class { 'project::ant': }
+    class { 'project::xhprof': }
 }

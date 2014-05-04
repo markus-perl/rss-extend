@@ -15,7 +15,7 @@ body {
 }
 
 .background-image {
-    background-image: url('../images/background.jpg');
+    background-image: url('../images/background.jpeg');
     min-height: 450px;
     background-size: cover;
     color: white;
