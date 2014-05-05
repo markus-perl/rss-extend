@@ -227,9 +227,10 @@ class Composer extends AbstractSource
 
                 if (!$alreadyInList) {
                     array_unshift($items, array(
-                                               'l' => $link,
-                                               't' => $title
-                                          ));
+                        'l' => $link,
+                        't' => $title,
+                        'd' => time(),
+                    ));
                     $items = array_slice($items, 0, 20);
                     $this->cacheItems($items);
                 }
@@ -249,6 +250,7 @@ class Composer extends AbstractSource
             $entry->setDescription('placeholder');
             $entry->setLink($item['l']);
             $entry->setTitle($item['t']);
+            $entry->setDateCreated(isset($item['d']) ? $item['d'] : time());
             $this->getFeedOutput()->addEntry($entry);
         }
 
