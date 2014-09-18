@@ -188,7 +188,7 @@ class Feed
             $id = 'entry' . crc32($entry->getLink());
 
             $item = null;
-            if ($cache) {
+            if ($cache && !DEVELOPMENT) {
                 $item = $cache->getItem($id);
             }
 

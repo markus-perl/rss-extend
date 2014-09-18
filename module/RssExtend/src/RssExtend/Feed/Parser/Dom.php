@@ -56,6 +56,7 @@ class Dom extends AbstractParser
     {
 
         if (isset($this->config->image)) {
+
             $url = $this->getUrl($entry);
             $html = $this->getDownloader()->download($url);
 
