@@ -26,6 +26,8 @@ if (file_exists($file)) {
     echo execute('scp ' . $file . ' www-data@rss-extend.www-factory.de:/tmp');
     echo execute('ssh www-data@rss-extend.www-factory.de "cd /tmp; tar -xzvf ' . basename($file) . '"');
     echo execute('ssh www-data@rss-extend.www-factory.de "cd /tmp/' . basename($file, '.tar.gz') . '; cp -r * /var/www/rss-extend/"');
+    echo "";
+    echo "RESTART FPM!!!!!";
 } else {
     exit('File ' . $argv[1] . ' not found');
 }

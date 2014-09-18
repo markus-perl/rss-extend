@@ -160,7 +160,7 @@ class FeedTest extends \PHPUnit_Framework_TestCase
 
         $result = $feed->getUpdatedFeed();
         $current = $result->current();
-        $this->assertEquals('<p><img src="http://localhost/image.jpg"/></p><p>This is a test</p><p>This is another block</p>', $current->getContent());
+        $this->assertEquals('<p><img class="rssextend" src="http://localhost/image.jpg"/></p><p>This is a test</p><p>This is another block</p>', $current->getContent());
         $this->assertEquals('Testfeed - rss-extend', $result->getTitle());
 
         $this->assertEquals('http://localhost/', $result->getLink());
