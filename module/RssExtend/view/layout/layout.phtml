@@ -11,7 +11,7 @@
                                     'type' => 'image/vnd.microsoft.icon',
                                     'href' => $this->basePath() . '/images/favicon.ico'
                                ))->prependStylesheet('/bootstrap/css/starter-template.css')->prependStylesheet('/bootstrap/css/bootstrap-theme.css')
-        ->prependStylesheet('/bootstrap/css/bootstrap.css'); ?>
+        ->prependStylesheet('/bootstrap/css/bootstrap.css') ->prependStylesheet('/css/font-awesome.css'); ?>
 
     <?php echo $this->headScript()->prependFile('/js/rssextend.js')->prependFile('/bootstrap/js/bootstrap.min.js')->prependFile('/js/jquery.min.js'); ?>
 

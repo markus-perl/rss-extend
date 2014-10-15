@@ -6,6 +6,17 @@
         'action' => 'rss'
     )); ?>
 
+<?php
+$this->headLink(array(
+    'rel' => 'alternate',
+    'type' => 'application/rss+xml',
+    'title' => $feed->getName(),
+    'href' => $url
+), 'PREPEND');
+?>
+
+
+
 
 <div class="jumbotron">
     <div class="container">
@@ -40,7 +51,7 @@
                            class="accordion-toggle"><?php echo $entry->getTitle(); ?>
                         </a>
                         <?php if ($entry->getDateCreated()): ?>
-                            <a class="right date" target="_blank" href="<?php echo $entry->getLink(); ?>"><?php echo $entry->getDateCreated()->setTimeZone($timeZone)->format('Y-m-d H:i'); ?></a>
+                            <a class="right date" target="_blank" href="<?php echo $entry->getLink(); ?>"><?php echo $entry->getDateCreated()->setTimeZone($timeZone)->format('Y-m-d H:i'); ?> <i class="fa fa-external-link"></i></a>
                         <?php endif; ?>
                     </div>
                     <div class="accordion-body collapse" id="collapse<?php echo $id; ?>">

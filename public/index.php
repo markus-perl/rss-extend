@@ -6,8 +6,6 @@
 chdir(dirname(__DIR__));
 ini_set('display_errors', 1);
 
-define('DEVELOPMENT', is_dir('/vagrant') || is_file('/tmp/debug'));
-
 // Setup autoloading
 require 'init_autoloader.php';
 

@@ -45,7 +45,10 @@ class ImageController extends AbstractActionController
         header('X-URL: ' . $url);
 
         try {
-            $image = $downloader->download($url);
+            $image = null;
+            if (false === $downloader->isLocalFile($url)) {
+                $image = $downloader->download($url);
+            }
             if ($image && $hash == $expectedHash) {
                 $finfo = new \finfo(FILEINFO_MIME);
                 $mime = explode(';', $finfo->buffer($image));

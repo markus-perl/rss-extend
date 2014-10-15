@@ -22,7 +22,7 @@ class Downloader
      */
     protected $sleepMax = 0;
 
-    public function setSleep ($min, $max)
+    public function setSleep($min, $max)
     {
         $this->setSleepMin($min);
         $this->setSleepMax($max);
@@ -31,15 +31,15 @@ class Downloader
     /**
      * @param int $sleepMin
      */
-    public function setSleepMin ($sleepMin)
+    public function setSleepMin($sleepMin)
     {
-        $this->sleepMin = (int) $sleepMin;
+        $this->sleepMin = (int)$sleepMin;
     }
 
     /**
      * @return int
      */
-    public function getSleepMin ()
+    public function getSleepMin()
     {
         return $this->sleepMin;
     }
@@ -47,15 +47,15 @@ class Downloader
     /**
      * @param int $sleepMax
      */
-    public function setSleepMax ($sleepMax)
+    public function setSleepMax($sleepMax)
     {
-        $this->sleepMax = (int) $sleepMax;
+        $this->sleepMax = (int)$sleepMax;
     }
 
     /**
      * @return int
      */
-    public function getSleepMax ()
+    public function getSleepMax()
     {
         return $this->sleepMax;
     }
@@ -63,7 +63,7 @@ class Downloader
     /**
      * @param \Zend\Cache\Storage\Adapter\AbstractAdapter $cache
      */
-    public function setCache (\Zend\Cache\Storage\Adapter\AbstractAdapter $cache = null)
+    public function setCache(\Zend\Cache\Storage\Adapter\AbstractAdapter $cache = null)
     {
         $this->cache = $cache;
     }
@@ -71,7 +71,7 @@ class Downloader
     /**
      * @return \Zend\Cache\Storage\StorageInterface
      */
-    public function getCache ()
+    public function getCache()
     {
         return $this->cache;
     }
@@ -80,7 +80,7 @@ class Downloader
      * @param string $url
      * @return string
      */
-    public function download ($url, $cached = true, $saveToFile = null)
+    public function download($url, $cached = true, $saveToFile = null)
     {
         $key = 'url' . crc32($url);
 
@@ -135,7 +135,7 @@ class Downloader
      * @param string $saveToFile
      * @return mixed
      */
-    private function downloadCurl ($url, $saveToFile)
+    private function downloadCurl($url, $saveToFile)
     {
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -166,13 +166,18 @@ class Downloader
      * @param string $saveToFile
      * @return string
      */
-    private function downloadFileGetContents ($url, $saveToFile)
+    private function downloadFileGetContents($url, $saveToFile)
     {
         $timeout = array(
             'http' => array(
                 'timeout' => 5
             )
         );
+
+
+        if (false === $this->isLocalFile($url) && false === is_file($url)) {
+            throw new Exception('invalid file or url ' . $url);
+        }
 
         $context = stream_context_create($timeout);
         $content = file_get_contents($url, null, $context);
@@ -183,6 +188,14 @@ class Downloader
         }
 
         return $content;
+    }
 
+    public function isLocalFile($url)
+    {
+        if (substr($url, 0, 4) == 'http') {
+            return true;
+        }
+
+        return false;
     }
 }

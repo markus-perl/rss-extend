@@ -32,6 +32,7 @@ class Module
         }
         mb_internal_encoding('UTF-8');
         header_remove('X-Powered-By');
+        define('DEVELOPMENT', is_dir('/vagrant') || is_file('/tmp/debug'));
 
         $e->getApplication()->getServiceManager()->get('translator');
         $eventManager = $e->getApplication()->getEventManager();

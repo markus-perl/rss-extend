@@ -26,6 +26,27 @@ class FeedController extends AbstractActionController
         return $serverUrl;
     }
 
+    public function updateAction()
+    {
+        $id = $this->getEvent()->getRouteMatch()->getParam('id');
+
+        /* @var \RssExtend\Feed\Collection $collection */
+        $collection = $this->getServiceLocator()->get('RssExtend\Feed\Collection');
+
+        $feed = $collection->getById($id);
+
+        if (null === $feed) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+
+        $feed->getUpdatedFeed(true);
+
+        $this->redirect()->toRoute('feed', array(
+            'id' => $id, 'action' => 'show'
+        ));
+    }
+
     public function showAction()
     {
         $id = $this->getEvent()->getRouteMatch()->getParam('id');

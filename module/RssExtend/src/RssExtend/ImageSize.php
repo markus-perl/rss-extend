@@ -82,7 +82,7 @@ class ImageSize
 
         if ($this->getDownloader()->download($url, false, $tmpFile)) {
             if (file_exists($tmpFile)) {
-                $imageSize = getimagesize($tmpFile);
+                $imageSize = @getimagesize($tmpFile);
                 unlink($tmpFile);
             }
 

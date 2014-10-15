@@ -246,12 +246,14 @@ class Composer extends AbstractSource
     private function export()
     {
         foreach ($this->items as $item) {
-            $entry = $this->getFeedOutput()->createEntry();
-            $entry->setDescription('placeholder');
-            $entry->setLink($item['l']);
-            $entry->setTitle($item['t']);
-            $entry->setDateCreated(isset($item['d']) ? $item['d'] : time());
-            $this->getFeedOutput()->addEntry($entry);
+            if ($item['l'] && $item['t']) {
+                $entry = $this->getFeedOutput()->createEntry();
+                $entry->setDescription('placeholder');
+                $entry->setLink($item['l']);
+                $entry->setTitle($item['t']);
+                $entry->setDateCreated(isset($item['d']) ? $item['d'] : time());
+                $this->getFeedOutput()->addEntry($entry);
+            }
         }
 
         return $this->getFeedOutput()->export('rss');

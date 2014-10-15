@@ -168,7 +168,7 @@ class Feed
     /**
      * @return \Zend\Feed\Writer\Feed
      */
-    public function getUpdatedFeed()
+    public function getUpdatedFeed($ignoreCache = false)
     {
         $origFeed = $this->getParser()->fetchFeed();
 
@@ -188,7 +188,7 @@ class Feed
             $id = 'entry' . crc32($entry->getLink());
 
             $item = null;
-            if ($cache && !DEVELOPMENT) {
+            if ($cache && !DEVELOPMENT && $ignoreCache !== true) {
                 $item = $cache->getItem($id);
             }
 
