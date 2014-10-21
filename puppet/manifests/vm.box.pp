@@ -1,22 +1,9 @@
-# Basic Puppet Apache manifest
-
-class precise64 {
-
-  group { "puppet":
-     ensure => "present",
-   }
-
-   File { owner => 0, group => 0, mode => 0644 }
-
-   file { '/etc/motd':
-     content => "Welcome to your Vagrant-built virtual machine!
-                 Managed by Puppet.\n"
-   }
-
 node default {
-  class { 'project': }
-}
+  include apt
+  include bash
+  include php
+  include nginx
+  include composer
+  include zf2
 
 }
-
-include precise64

@@ -7,7 +7,6 @@ Vagrant.configure("2") do |config|
     config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", "512"]
         vb.customize ["modifyvm", :id, "--nestedpaging", "off"]
-        vb.customize ["modifyvm", :id, "--cpus", "2"]
         # vb.gui = true
     end
 
@@ -18,6 +17,8 @@ Vagrant.configure("2") do |config|
     config.vm.network :forwarded_port, guest: 80, host: 8080        #nginx
 
     # Puppet provision
+    config.vm.provision :shell, :path => "puppet/bin/provision"
+
     config.vm.provision :puppet do |puppet|
         puppet.manifests_path = "puppet/manifests"
         puppet.manifest_file  = "vm.box.pp"

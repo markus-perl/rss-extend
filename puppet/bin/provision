@@ -1,0 +1,9 @@
+#!/bin/sh
+
+tty -s && mesg n
+export DEBIAN_FRONTEND=noninteractive
+sed -i '/templatedir/d' /etc/puppet/puppet.conf
+apt-get update -y
+apt-get install puppet ca-certificates -y
+puppet module install puppetlabs-stdlib
+touch /etc/puppet/hiera.yaml

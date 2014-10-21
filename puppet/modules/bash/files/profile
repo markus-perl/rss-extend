@@ -1,0 +1,36 @@
+# ~/.profile: executed by Bourne-compatible login shells.
+
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+
+tty -s && mesg n
+
+RED="\[\033[0;31m\]"
+CYAN="\[\033[0;36m\]"
+YELLOW="\[\033[0;33m\]"
+GREEN="\[\033[0;32m\]"
+NO_COLOUR="\[\033[0m\]"
+BLUE="\[\033[1;34m\]"
+HOSTNAME=`cat /etc/hostname`
+
+PS1="$CYAN\u@$HOSTNAME$YELLOW$NO_COLOUR:\w$NO_COLOUR\$ "
+
+export LS_OPTIONS='--color=auto'
+eval "`dircolors`"
+alias ls='ls $LS_OPTIONS'
+alias ll='ls $LS_OPTIONS -l'
+alias l='ls $LS_OPTIONS -lA'
+
+PATH=$PATH:/root/puppet/bin:/vagrant/puppet/bin:/vagrant/bin
+export PATH
+
+if [ ! -d "/var/www" ]; then
+  cd /var/www
+fi
+
+if [ ! -d "/vagrant" ]; then
+  cd /vagrant
+fi
