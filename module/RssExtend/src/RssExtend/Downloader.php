@@ -193,9 +193,9 @@ class Downloader
     public function isLocalFile($url)
     {
         if (substr($url, 0, 4) == 'http') {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 }

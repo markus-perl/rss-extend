@@ -27,7 +27,7 @@ class ImageController extends AbstractActionController
 {
     public function indexAction()
     {
-        $width = 1000;
+        $width = 800;
         $delivered = false;
 
         $url = base64_decode($this->params()->fromRoute('url'));
@@ -46,13 +46,15 @@ class ImageController extends AbstractActionController
 
         try {
             $image = null;
+
             if (false === $downloader->isLocalFile($url)) {
                 $image = $downloader->download($url);
             }
+
             if ($image && $hash == $expectedHash) {
                 $finfo = new \finfo(FILEINFO_MIME);
                 $mime = explode(';', $finfo->buffer($image));
-                if ($mime && isset($mime[0]) && ($mime[0] == 'image/jpeg' || $mime[0] == 'image/png')) {
+                if ($mime && isset($mime[0]) && in_array($mime[0], array('image/jpeg', 'image/jpg', 'image/png'))) {
                     $size = getimagesizefromstring($image);
                     $origWidth = $size[0];
                     $origHeight = $size[1];
@@ -85,6 +87,7 @@ class ImageController extends AbstractActionController
         }
 
         if (!$delivered) {
+
             if ($url) {
                 header("Location: " . $url, true, 302);
             } else {
