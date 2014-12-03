@@ -82,6 +82,10 @@ class Downloader
      */
     public function download($url, $cached = true, $saveToFile = null)
     {
+        if (substr($url, 0, 2) == '//') {
+            $url = 'http:' . $url;
+        }
+
         $key = 'url' . crc32($url);
 
         if (isset($this->sessionCache[$key])) {
@@ -107,6 +111,9 @@ class Downloader
                     $content = $this->downloadCurl($url, $saveToFile);
                     $downloadMethod = 'curl';
                 } else {
+                    if (substr($url, 0, 4) != 'http' && APPLICATION_ENV !== 'testing') {
+                        throw new Exception\DownloadException('invalid url provided: ' . $url);
+                    }
                     $content = $this->downloadFileGetContents($url, $saveToFile);
                     $downloadMethod = 'file_get_contents';
                 }
@@ -192,7 +199,7 @@ class Downloader
 
     public function isLocalFile($url)
     {
-        if (substr($url, 0, 4) == 'http') {
+        if (substr($url, 0, 4) == 'http' || substr($url, 0, 2) == '//') {
             return false;
         }
 

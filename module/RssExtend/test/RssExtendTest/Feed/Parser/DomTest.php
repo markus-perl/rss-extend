@@ -33,14 +33,15 @@ class DomTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \RssExtend\Feed\Parser\Exception\RuntimeException
      */
-    public function testGetContent ()
+    public function testGetContentDownload ()
     {
-
         $feedString = file_get_contents(__DIR__ . '/feed.xml');
         $item1Html = file_get_contents(__DIR__ . '/item1.html');
-        $downloader = $this->getMock('Downloader', array('download'));
-        $downloader->expects($this->at(0))->method('download')->will($this->returnValue($feedString));
-        $downloader->expects($this->at(1))->method('download')->will($this->returnValue($item1Html));
+        $downloader = $this->getMock('Downloader', array('download', 'isLocalFile'));
+        $downloader->expects($this->at(0))->method('download')->with('/my/rss')->will($this->returnValue($feedString));
+        $downloader->expects($this->at(1))->method('isLocalFile')->will($this->returnValue(false));
+        $downloader->expects($this->at(2))->method('download')->with('http://localhost/item1')->will($this->returnValue($item1Html));
+
 
         $config = new \Zend\Config\Config(array());
 
@@ -49,7 +50,7 @@ class DomTest extends \PHPUnit_Framework_TestCase
         $dom = new Dom($feed, $config);
         $dom->setDownloader($downloader);
 
-        $result = $dom->getUpdatedFeed($dom->fetchFeed());
+        $dom->getUpdatedFeed($dom->fetchFeed());
     }
 
     public function testGetUpdatedFeed ()

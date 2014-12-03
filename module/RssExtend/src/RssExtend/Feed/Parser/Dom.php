@@ -13,7 +13,11 @@ class Dom extends AbstractParser
     protected function getContent(\Zend\Feed\Writer\Entry $entry)
     {
         $url = $this->getUrl($entry);
-        $html = $this->getDownloader()->download($url);
+        $html = null;
+
+        if (false === $this->getDownloader()->isLocalFile($url)) {
+            $html = $this->getDownloader()->download($url);
+        }
 
         $noContent = 'no content found';
 
