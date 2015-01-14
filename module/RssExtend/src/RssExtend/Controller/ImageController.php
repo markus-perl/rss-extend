@@ -88,12 +88,8 @@ class ImageController extends AbstractActionController
 
         if (!$delivered) {
 
-            if ($url) {
-                header("Location: " . $url, true, 302);
-            } else {
-                header('Content-Type: image/png');
-                echo file_get_contents(getcwd() . '/public/images/notFound.png');
-            }
+            header('Content-Type: image/png');
+            echo file_get_contents(getcwd() . '/public/images/notFound.png');
 
         }
 

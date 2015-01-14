@@ -111,7 +111,11 @@ class Downloader
                     $content = $this->downloadCurl($url, $saveToFile);
                     $downloadMethod = 'curl';
                 } else {
-                    if (substr($url, 0, 4) != 'http' && APPLICATION_ENV !== 'testing') {
+                    $env = null;
+                    if (defined('APPLICATION_ENV')) {
+                        $env = APPLICATION_ENV;
+                    }
+                    if (substr($url, 0, 4) != 'http' && $env !== 'testing') {
                         throw new Exception\DownloadException('invalid url provided: ' . $url);
                     }
                     $content = $this->downloadFileGetContents($url, $saveToFile);
