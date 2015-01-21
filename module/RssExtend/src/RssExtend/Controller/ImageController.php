@@ -40,6 +40,7 @@ class ImageController extends AbstractActionController
         $downloader = new Downloader();
         $downloader->setCache($cache);
         $downloader->setSleep(50000, 500000);
+        $downloader->setMaxDownloadSize(10);
 
         $url = utf8_decode($url);
         header('X-URL: ' . $url);
@@ -77,7 +78,10 @@ class ImageController extends AbstractActionController
                         if ($width <= 300) {
                             $quality = 80;
                         }
+                        ob_start();
                         imagejpeg($thumbnail, null, $quality);
+                        header("Content-Length: " . ob_get_length());
+                        ob_end_flush();
                         $delivered = true;
                     }
                 }
