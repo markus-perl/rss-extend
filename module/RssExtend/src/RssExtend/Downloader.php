@@ -22,6 +22,12 @@ class Downloader
      */
     protected $sleepMax = 0;
 
+    /**
+     * in MB
+     * @var int
+     */
+    protected $maxDownloadSize = 50;
+
     public function setSleep($min, $max)
     {
         $this->setSleepMin($min);
@@ -100,6 +106,7 @@ class Downloader
             }
         }
 
+
         if (false == $content) {
 
             $retries = 0;
@@ -111,7 +118,11 @@ class Downloader
                     $content = $this->downloadCurl($url, $saveToFile);
                     $downloadMethod = 'curl';
                 } else {
-                    if (substr($url, 0, 4) != 'http' && APPLICATION_ENV !== 'testing') {
+                    $env = null;
+                    if (defined('APPLICATION_ENV')) {
+                        $env = APPLICATION_ENV;
+                    }
+                    if (substr($url, 0, 4) != 'http' && $env !== 'testing') {
                         throw new Exception\DownloadException('invalid url provided: ' . $url);
                     }
                     $content = $this->downloadFileGetContents($url, $saveToFile);
@@ -150,6 +161,13 @@ class Downloader
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 600);
         curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+
+        $maxDownloadSize = $this->maxDownloadSize;
+        curl_setopt($curl, CURLOPT_NOPROGRESS, 0);
+        curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, function ($ds, $downloaded, $us, $u) use ($maxDownloadSize) {
+            // If $downloaded exceeds the limit, returning non-0 breaks the connection!
+            return ($downloaded > (1 * 1024 * 1024 * $maxDownloadSize)) ? 1 : 0;
+        });
 
         if ($saveToFile) {
             curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
@@ -205,4 +223,21 @@ class Downloader
 
         return true;
     }
+
+    /**
+     * @return int
+     */
+    public function getMaxDownloadSize()
+    {
+        return $this->maxDownloadSize;
+    }
+
+    /**
+     * @param int $maxDownloadSize
+     */
+    public function setMaxDownloadSize($maxDownloadSize)
+    {
+        $this->maxDownloadSize = $maxDownloadSize;
+    }
+
 }
