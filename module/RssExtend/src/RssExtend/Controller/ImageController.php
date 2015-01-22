@@ -65,7 +65,7 @@ class ImageController extends AbstractActionController
 
                     $origImage = null;
                     // 2000 * 2000 px max to prevent memory leaks
-                    if ($width * $height > 4000000) {
+                    if ($width * $height < 4000000) {
                         $origImage = imagecreatefromstring($image);
                     }
 
