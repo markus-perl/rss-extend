@@ -62,7 +62,13 @@ class ImageController extends AbstractActionController
                     $width = min($origWidth, $width);
                     $ratio = $origWidth / $origHeight;
                     $height = round($width / $ratio);
-                    $origImage = imagecreatefromstring($image);
+
+                    $origImage = null;
+                    // 2000 * 2000 px max to prevent memory leaks
+                    if ($width * $height > 4000000) {
+                        $origImage = imagecreatefromstring($image);
+                    }
+
                     if ($origImage) {
                         header('Content-Type: ' . $mime[0]);
                         header('Pragma: public');
