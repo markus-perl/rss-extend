@@ -34,7 +34,11 @@ class Dom extends AbstractParser
 
         if ($this->config->xhtml) {
             preg_match("/<body.*\<\/body>/s", $html, $body);
-            $dom->loadHtmlFragment($body[0]);
+            if (isset($body[0])) {
+                $dom->loadHtmlFragment($body[0]);
+            } else {
+                return $noContent;
+            }
         }
 
         $results = $dom->execute(trim($this->config->content));
