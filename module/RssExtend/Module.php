@@ -45,8 +45,11 @@ class Module
         $locator = $app->getServiceManager();
         $this->cache = $locator->get('Zend\Cache\Storage\Adapter\Filesystem');
 
-        if (mt_rand(0, 100) == 1) {
-            $this->cache->clearExpired();
+        if (mt_rand(0, 500) == 1) {
+            try {
+                $this->cache->clearExpired();
+            } catch (\RuntimeException $e) {
+            }
         }
 
     }
@@ -91,17 +94,17 @@ class Module
             'factories' => array(
                 'Zend\Cache\Storage\Adapter\Filesystem' => function ($sm) {
 
-                        $options = new FilesystemOptions();
-                        $options->setCacheDir(__DIR__ . '/../../data/cache/');
-                        $options->setTtl(86400);
+                    $options = new FilesystemOptions();
+                    $options->setCacheDir(__DIR__ . '/../../data/cache/');
+                    $options->setTtl(86400);
 
-                        $cache = StorageFactory::adapterFactory('filesystem', $options);
-                        $plugin = StorageFactory::pluginFactory('exception_handler', array(
-                            'throw_exceptions' => true,
-                        ));
-                        $cache->addPlugin($plugin);
-                        return $cache;
-                    },
+                    $cache = StorageFactory::adapterFactory('filesystem', $options);
+                    $plugin = StorageFactory::pluginFactory('exception_handler', array(
+                        'throw_exceptions' => true,
+                    ));
+                    $cache->addPlugin($plugin);
+                    return $cache;
+                },
             ),
         );
     }

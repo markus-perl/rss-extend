@@ -23,7 +23,7 @@ class ImageProxy extends AbstractPostProcessor
      * @param $text
      * @return string
      */
-    private function replaceSource($text)
+    private function replaceSource($text, Entry $entry)
     {
         $dom = $this->getDom($text);
         $res = $dom->execute('img');
@@ -33,6 +33,14 @@ class ImageProxy extends AbstractPostProcessor
          */
         foreach ($res as $element) {
             $src = $element->getAttribute('src');
+
+            //absolute image url
+            if (mb_substr($src, 0, 1) == '/') {
+                $parsedUrl = parse_url($entry->getLink());
+                $domain = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
+                $src = $domain . $src;
+            }
+
             $element->setAttribute('src', $this->_imageHelper->url($src));
         }
 
@@ -45,8 +53,8 @@ class ImageProxy extends AbstractPostProcessor
      */
     public function process(Entry $entry)
     {
-        $entry->setContent($this->replaceSource($entry->getContent()));
-        $entry->setDescription($this->replaceSource($entry->getDescription()));
+        $entry->setContent($this->replaceSource($entry->getContent(), $entry));
+        $entry->setDescription($this->replaceSource($entry->getDescription(), $entry));
 
         if ($entry->getMediaThumbnail()) {
             $thumb = $entry->getMediaThumbnail();
