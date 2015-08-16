@@ -65,6 +65,7 @@ class Dom extends AbstractParser
 
         if (isset($this->config->image)) {
 
+
             $url = $this->getUrl($entry);
             $html = $this->getDownloader()->download($url);
 
@@ -74,12 +75,22 @@ class Dom extends AbstractParser
             $results = $dom->execute(trim($this->config->image));
 
             if (count($results)) {
-                $imageUrl = $results->current()->getAttribute('src');
+
+                $imageUrl = null;
+                foreach (array('src', 'data-cfsrc') as $attribute) {
+                    $imageUrl = $results->current()->getAttribute($attribute);
+
+                    if ($imageUrl) {
+                        break;
+                    }
+                }
 
                 if ($imageUrl) {
 
                     if (substr($imageUrl, 0, 7) == 'http://' || substr($imageUrl, 0, 8) == 'https://') {
                         return $imageUrl;
+                    } elseif (substr($imageUrl, 0, 2) == '//') {
+                        return 'http:' . $imageUrl;
                     } else {
                         return url_to_absolute($entry->getLink(), $imageUrl);
                     }
