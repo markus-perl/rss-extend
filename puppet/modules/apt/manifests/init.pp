@@ -1,12 +1,37 @@
 class apt {
-  $version = 'wheezy'
 
-  file { "/etc/apt/sources.list.d/dotdeb.list":
-    owner   => root,
-    group   => root,
-    mode    => 644,
-    content => "deb http://packages.dotdeb.org $version all
+  define add_key() {
+    exec { "apt key ${name}":
+      subscribe => File["/etc/apt/keys"],
+      command     => "/usr/bin/apt-key add /etc/apt/keys/${name}",
+      notify      => Exec["/usr/bin/apt-get update"],
+      refreshonly => true,
+    }
+
+  }
+
+  if $operatingsystemrelease =~ /^7./ {
+    notice('debian 7.x found!')
+    $version = 'wheezy'
+  }
+
+  if $operatingsystemrelease =~ /^8./ {
+    notice('debian 8.x found!')
+    $version = 'jessie'
+  }
+
+  if $operatingsystemrelease =~ /^7./ {
+    file { "/etc/apt/sources.list.d/dotdeb.list":
+      owner   => root,
+      group   => root,
+      mode    => 644,
+      content => "deb http://packages.dotdeb.org $version all
     deb http://packages.dotdeb.org $version-php55 all"
+    }
+  } else {
+    file { "/etc/apt/sources.list.d/dotdeb.list":
+      ensure => absent
+    }
   }
 
   file { "/etc/apt/sources.list.d/backports.list":
@@ -16,40 +41,40 @@ class apt {
     content => "deb http://ftp.debian.org/debian/ $version-backports main non-free contrib"
   }
 
-  file { "/etc/apt/sources.list.d/percona.list":
+  file { "/etc/apt/sources.list.d/neo4j.list":
     owner   => root,
     group   => root,
     mode    => 644,
-    content => "deb http://repo.percona.com/apt $version main"
+    content => "deb http://debian.neo4j.org/repo stable/"
   }
 
-  file { "/etc/apt/dotdeb.gpg":
+  if $operatingsystemrelease =~ /^7./ {
+    file { "/etc/apt/sources.list.d/percona.list":
+      owner   => root,
+      group   => root,
+      mode    => 644,
+      content => "deb http://repo.percona.com/apt $version main"
+    }
+  } else {
+    file { "/etc/apt/sources.list.d/percona.list":
+      ensure => absent
+    }
+  }
+
+  file { "/etc/apt/keys":
+    ensure  => directory,
+    recurse => true,
     owner   => root,
     group   => root,
-    mode    => 644,
-    source  => "puppet:///modules/apt/dotdeb.gpg",
+    source  => "puppet:///modules/apt/keys",
   }
 
-  file { "/etc/apt/percona.gpg":
-    owner   => root,
-    group   => root,
-    mode    => 644,
-    source  => "puppet:///modules/apt/percona.gpg",
-  }
-
-  exec { "dotdeb key":
-    command     => "/usr/bin/apt-key add /etc/apt/dotdeb.gpg",
-    require     => File["/etc/apt/dotdeb.gpg"],
-    subscribe   => File["/etc/apt/sources.list.d/dotdeb.list"],
-    refreshonly => true,
-  }
-
-  exec { "percona key":
-    command     => "/usr/bin/apt-key add /etc/apt/percona.gpg",
-    require     => File["/etc/apt/percona.gpg"],
-    subscribe   => File["/etc/apt/sources.list.d/percona.list"],
-    refreshonly => true,
-  }
+  add_key{ "dotdeb.gpg": }
+  add_key{ "gluster.gpg": }
+  add_key{ "launchpad.gpg": }
+  add_key{ "mongodb.gpg": }
+  add_key{ "percona.gpg": }
+  add_key{ "neo4j.gpg": }
 
   file { "/usr/bin/apt-required":
     owner  => root,
@@ -61,8 +86,6 @@ class apt {
   exec { "/usr/bin/apt-get update":
     require => [
       File["/usr/bin/apt-required"],
-      Exec["dotdeb key"],
-      Exec["percona key"],
       File["/etc/apt/sources.list.d/dotdeb.list"],
       File["/etc/apt/sources.list.d/percona.list"],
       File["/etc/apt/sources.list.d/backports.list"],

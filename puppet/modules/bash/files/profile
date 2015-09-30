@@ -24,7 +24,7 @@ alias ls='ls $LS_OPTIONS'
 alias ll='ls $LS_OPTIONS -l'
 alias l='ls $LS_OPTIONS -lA'
 
-PATH=$PATH:/root/puppet/bin:/vagrant/puppet/bin:/vagrant/bin
+PATH=$PATH:/root/puppet/bin:/root/puppet/bin:/vagrant/puppet/modules/bin/:/vagrant/bin
 export PATH
 
 if [ -d "/var/www" ]; then
