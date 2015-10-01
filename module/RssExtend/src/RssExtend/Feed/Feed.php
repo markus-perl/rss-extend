@@ -223,7 +223,7 @@ class Feed implements ServiceLocatorAwareInterface
         foreach ($unset as $key) {
             $origFeed->removeEntry($key);
         }
-        $origFeed->orderByDate();
+        // $origFeed->orderByDate();
 
         $feed = $this->getParser()->getUpdatedFeed($origFeed);
 
