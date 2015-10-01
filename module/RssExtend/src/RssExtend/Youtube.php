@@ -116,9 +116,9 @@ class Youtube
                 $this->execute($cmd);
                 copy($tmpAac, $target);
             } else {
-                $cmd = $cmdBase . ' -f 22 ';
+                $cmd = $cmdBase . ' -f 43 ';
                 $this->execute($cmd);
-                copy($tmpMp4, $target);
+                copy($tmpWebm, $target);
             }
 
             foreach ($files as $file) {

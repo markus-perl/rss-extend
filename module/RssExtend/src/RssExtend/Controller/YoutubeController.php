@@ -27,20 +27,30 @@ class YoutubeController extends AbstractActionController
         return $this->getServiceLocator()->get('RssExtend\Youtube');
     }
 
+    /**
+     * @return \Zend\Cache\Storage\Adapter\Filesystem
+     */
+    public function getCache()
+    {
+        return $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
+    }
+
     public function indexAction()
     {
 
         $audioOnly = $this->params('audioOnly') == 1;
-        $extension = $audioOnly ? 'm4a' : 'mp4';
+        $extension = $audioOnly ? 'm4a' : 'webm';
         $url = base64_decode($this->params()->fromRoute('url'));
         $hash = $this->params()->fromRoute('hash');
         $expectedHash = md5($url . gethostname() . 'RssExtend');
         $youtube = $this->getYoutube();
 
+
         if ($url && $hash === $expectedHash) {
             $youtube->checkDependencies();
 
             $tmpFile = $youtube->getCacheFilePath($hash);
+
             $youtube->download($url, $tmpFile, $audioOnly);
 
             if (file_exists($tmpFile)) {

@@ -37,7 +37,7 @@ abstract class AbstractParser
      * @param \Zend\Feed\Reader\Entry\EntryInterface $entry
      * @return string
      */
-    protected  function getUrl(\Zend\Feed\Writer\Entry $entry)
+    protected function getUrl(\Zend\Feed\Writer\Entry $entry)
     {
         $url = $entry->getContent();
         $validator = new \Zend\Uri\Http();

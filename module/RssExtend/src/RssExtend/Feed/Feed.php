@@ -219,11 +219,13 @@ class Feed implements ServiceLocatorAwareInterface
             }
         }
 
-        rsort($unset);
-        foreach ($unset as $key) {
-            $origFeed->removeEntry($key);
+        if (count($unset)) {
+            rsort($unset);
+            foreach ($unset as $key) {
+                $origFeed->removeEntry($key);
+            }
+            $origFeed->orderByDate();
         }
-        // $origFeed->orderByDate();
 
         $feed = $this->getParser()->getUpdatedFeed($origFeed);
 
@@ -231,7 +233,9 @@ class Feed implements ServiceLocatorAwareInterface
 
         $cache = $this->getCache();
 
-        foreach ($feed as $entry) {
+        $unset = array();
+
+        foreach ($feed as $key => $entry) {
             $id = 'entry' . crc32($entry->getLink());
 
             $item = null;
@@ -261,14 +265,28 @@ class Feed implements ServiceLocatorAwareInterface
                     }
                 }
             } else {
+
                 foreach ($this->getPostProcessors() as $postProcessor) {
-                    $postProcessor->process($entry);
+                    $newEntry = $postProcessor->process($entry);
+
+                    if ($newEntry === null) {
+                        $unset[] = $key;
+                    }
                 }
 
                 if ($cache) {
                     $cache->addItem($id, serialize($entry));
                 }
             }
+
+        }
+
+        if (count($unset)) {
+            rsort($unset);
+            foreach ($unset as $key) {
+                $feed->removeEntry($key);
+            }
+            $feed->orderByDate();
         }
 
         $feed->rewind();
