@@ -1,10 +1,12 @@
 <?php
 namespace RssExtend\Feed;
 
+use RssExtend\Feed\Exception\RuntimeException;
 use RssExtend\Feed\Parser\AbstractParser;
-use RssExtend\Composer\Composer;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Feed
+class Feed implements ServiceLocatorAwareInterface
 {
 
     /**
@@ -61,6 +63,36 @@ class Feed
      * @var \Zend\Config\Config
      */
     private $composerConfig;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    private $serviceLocator = null;
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        if (null == $this->serviceLocator) {
+            throw new RuntimeException('Service Locator not set');
+        }
+
+        return $this->serviceLocator;
+    }
+
 
     /**
      * @param string $id
@@ -159,6 +191,11 @@ class Feed
 
             $parser = new $parserName($this, $this->getMethodConfig());
             $parser->getDownloader()->setCache($this->getCache());
+
+            if ($parser instanceof ServiceLocatorAwareInterface) {
+                $parser->setServiceLocator($this->getServiceLocator());
+            }
+
             $this->setParser($parser);
         }
 
@@ -172,11 +209,21 @@ class Feed
     {
         $origFeed = $this->getParser()->fetchFeed();
 
-        foreach ($origFeed as $entry) {
+        $unset = array();
+        foreach ($origFeed as $key => $entry) {
             foreach ($this->getPreProcessors() as $preProcessor) {
-                $preProcessor->process($entry);
+                $newEntry = $preProcessor->process($entry);
+                if ($newEntry === null) {
+                    $unset[] = $key;
+                }
             }
         }
+
+        rsort($unset);
+        foreach ($unset as $key) {
+            $origFeed->removeEntry($key);
+        }
+        $origFeed->orderByDate();
 
         $feed = $this->getParser()->getUpdatedFeed($origFeed);
 
@@ -279,8 +326,13 @@ class Feed
             $extensions->setInvokableClass('MediaEntry', 'RssExtend\Feed\Writer\Extension\Media\Entry');
             $extensions->setInvokableClass('MediaRendererEntry', 'RssExtend\Feed\Writer\Extension\Media\Renderer\Entry');
             $extensions->setInvokableClass('MediaRendererFeed', 'RssExtend\Feed\Writer\Extension\Media\Renderer\Feed');
-
+            $extensions->setInvokableClass('ITunesEntry', 'Zend\Feed\Writer\Extension\ITunes\Entry');
+            $extensions->setInvokableClass('ITunesFeed', 'Zend\Feed\Writer\Extension\ITunes\Feed');
+            $extensions->setInvokableClass('ITunesRendererEntry', 'Zend\Feed\Writer\Extension\ITunes\Renderer\Entry');
+            $extensions->setInvokableClass('ITunesRendererFeed', 'Zend\Feed\Writer\Extension\ITunes\Renderer\Feed');
+            \Zend\Feed\Writer\Writer::registerExtension('ITunes');
             \Zend\Feed\Writer\Writer::registerExtension('Media');
+
         }
     }
 

@@ -9,6 +9,7 @@
 
 namespace RssExtend;
 
+use RssExtend\Feed\Collection;
 use Zend\Cache\Storage\Adapter\FilesystemOptions;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -27,6 +28,8 @@ class Module
 
     public function onBootstrap(MvcEvent $e)
     {
+        Vagrant::clearCache();
+
         if ('' == ini_get('date.timezone')) {
             date_default_timezone_set('Europe/Berlin');
         }
@@ -95,7 +98,7 @@ class Module
                 'Zend\Cache\Storage\Adapter\Filesystem' => function ($sm) {
 
                     $options = new FilesystemOptions();
-                    $options->setCacheDir(__DIR__ . '/../../data/cache/');
+                    $options->setCacheDir($sm->get('Config')['cacheDir']);
                     $options->setTtl(86400);
 
                     $cache = StorageFactory::adapterFactory('filesystem', $options);
@@ -104,6 +107,24 @@ class Module
                     ));
                     $cache->addPlugin($plugin);
                     return $cache;
+                },
+                'RssExtend\Host' => function ($sm) {
+                    $host = new Host();
+                    $host->setCacheDir($sm->get('Config')['cacheDir']);
+                    return $host;
+                },
+                'RssExtend\Feed\Collection' => function ($sm) {
+                    $collection = new Collection();
+                    $collection->setCache($sm->get('\Zend\Cache\Storage\Adapter\Filesystem'));
+                    $collection->setServiceLocator($sm);
+                    $collection->fillByConfig($sm->get('RssExtend\Feed\Config'));
+                    return $collection;
+                },
+                'RssExtend\Youtube' => function ($sm) {
+                    $youtube = new Youtube();
+                    $youtube->setCacheDir($sm->get('Config')['cacheDir']);
+                    $youtube->setCache($sm->get('\Zend\Cache\Storage\Adapter\Filesystem'));
+                    return $youtube;
                 },
             ),
         );

@@ -69,7 +69,7 @@ class Trim extends AbstractParser
      * @return string
      * @throws Exception\RuntimeException
      */
-    protected function getContent(\Zend\Feed\Writer\Entry $entry)
+    protected function getContent(\Zend\Feed\Writer\Entry $entry, $index = null)
     {
         $url = $entry->getLink();
 

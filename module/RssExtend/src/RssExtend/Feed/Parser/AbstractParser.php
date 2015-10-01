@@ -208,13 +208,14 @@ abstract class AbstractParser
     {
 
         /* @var \Zend\Feed\Writer\Entry $entry */
-        foreach ($feed as $entry) {
+        foreach ($feed as $index => $entry) {
 
             try {
-                $content = $this->getContent($entry);
+                $content = $this->getContent($entry, $index);
             } catch (DownloadException $e) {
                 $content = 'failed to fetch content: ' . $e->getMessage();
             }
+
             $content = strip_tags($content, '<p><br><a><img>');
 
             if ($content) {
@@ -240,10 +241,11 @@ abstract class AbstractParser
         }
 
         $feed->rewind();
+
         return $feed;
     }
 
-    abstract protected function getContent(\Zend\Feed\Writer\Entry $entry);
+    abstract protected function getContent(\Zend\Feed\Writer\Entry $entry, $index = null);
 
     /**
      * @return string

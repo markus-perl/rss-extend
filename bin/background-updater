@@ -6,6 +6,9 @@ ini_set('max_execution_time', 300);
 require 'init_autoloader.php';
 $application = Zend\Mvc\Application::init(require 'config/application.config.php');
 
+$youtube = $application->getServiceManager()->get('RssExtend\Youtube');
+$youtube->clearExpired();
+
 $collection = $application->getServiceManager()->get('RssExtend\Feed\Collection');
 
 foreach ($collection as $feed) {
@@ -14,10 +17,11 @@ foreach ($collection as $feed) {
 
     /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
     $cache = $application->getServiceManager()->get('Zend\Cache\Storage\Adapter\Filesystem');
+    $cache->clearExpired();
 
     $downloader = $feed->getParser()->getDownloader();
     $downloader->setCache($cache);
-    $downloader->setSleep(500000, 5000000); // 0.5 - 5 sec
+    $downloader->setSleep(500000, 2000000); // 0.5 - 5 sec
 
     try {
         $entries = $feed->getUpdatedFeed();
@@ -26,5 +30,7 @@ foreach ($collection as $feed) {
         echo ' ... failure: ' . $e->getMessage() . '.' . PHP_EOL;
     }
 }
+
+
 
 exit(0);

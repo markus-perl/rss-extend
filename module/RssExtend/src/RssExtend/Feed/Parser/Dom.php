@@ -10,7 +10,7 @@ class Dom extends AbstractParser
      * (non-PHPdoc)
      * @see RssExtend_Worker_Abstract::_getContent()
      */
-    protected function getContent(\Zend\Feed\Writer\Entry $entry)
+    protected function getContent(\Zend\Feed\Writer\Entry $entry, $index = null)
     {
         $url = $this->getUrl($entry);
         $html = null;

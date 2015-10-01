@@ -1,11 +1,14 @@
 <?php
 namespace RssExtend\Feed;
+use RssExtend\Exception\RuntimeException;
 use RssExtend\Feed\Config;
 use RssExtend\Feed\Feed;
 use RssExtend\Composer\Composer;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 
-class Collection implements \Iterator, \Countable
+class Collection implements \Iterator, \Countable, ServiceLocatorAwareInterface
 {
     private $position = 0;
 
@@ -20,9 +23,38 @@ class Collection implements \Iterator, \Countable
     private $data = array();
 
     /**
-     * @var Composer
+     * @var \RssExtend\Feed\Source\Composer
      */
     private $composer = null;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    private $serviceLocator = null;
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        if (null == $this->serviceLocator) {
+            throw new RuntimeException('Service Locator not set');
+        }
+
+        return $this->serviceLocator;
+    }
 
     /**
      * @param Feed $feed
@@ -32,12 +64,6 @@ class Collection implements \Iterator, \Countable
         $this->data[] = $feed;
     }
 
-    public function __construct (Config $config = null)
-    {
-        if ($config) {
-            $this->fillByConfig($config);
-        }
-    }
 
     /**
      * @param Config $config
@@ -46,6 +72,7 @@ class Collection implements \Iterator, \Countable
     {
         foreach ($config as $id => $entry) {
             $feed = new Feed($id, $entry);
+            $feed->setServiceLocator($this->getServiceLocator());
             $this->addElement($feed);
         }
         $this->sort();
@@ -143,7 +170,7 @@ class Collection implements \Iterator, \Countable
     }
 
     /**
-     * @param \RssExtend\Composer\Composer $composer
+     * @param \RssExtend\Feed\Source\Composer $composer
      */
     public function setComposer($composer)
     {
@@ -151,7 +178,7 @@ class Collection implements \Iterator, \Countable
     }
 
     /**
-     * @return \RssExtend\Composer\Composer
+     * @return \RssExtend\Feed\Source\Composer
      */
     public function getComposer()
     {

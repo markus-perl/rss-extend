@@ -9,6 +9,7 @@
 
 namespace RssExtend\Controller;
 
+use RssExtend\Vagrant;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use RssExtend\Feed;
@@ -92,7 +93,7 @@ class FeedController extends AbstractActionController
         $time = time();
         $xml = $cache->getItem($cacheKey = 'xml' . crc32($feed->getId() . ($time - $time % 3)));
 
-        if (false == $xml) {
+        if (false == $xml || Vagrant::isVagrant()) {
             $downloader = $feed->getParser()->getDownloader();
             $downloader->setCache($cache);
             $downloader->setSleep(50000, 500000);

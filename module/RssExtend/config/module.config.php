@@ -8,6 +8,7 @@
  */
 
 return array(
+    'cacheDir' => __DIR__ . '/../../../data/cache',
     'di' => array(
         'instance' => array(
             'RssExtend\Downloader' => array(
@@ -20,12 +21,6 @@ return array(
                     'directory' => __DIR__ . '/../../../feeds',
                 )
             ),
-            'RssExtend\Feed\Collection' => array(
-                'parameters' => array(
-                    'config' => 'RssExtend\Feed\Config',
-                    'cache' => '\Zend\Cache\Storage\Adapter\Filesystem',
-                ),
-            )
         )
     ),
     'router' => array(
@@ -49,10 +44,21 @@ return array(
                 'options' => array(
                     'route' => '/image[/:url][/:hash]',
                     'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                     'defaults' => array(
                         'controller' => 'RssExtend\Controller\Image',
+                        'action' => 'index',
+                    ),
+                )
+            ),
+            'youtube' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/youtube[/:url][/:hash][/:audioOnly]',
+                    'constraints' => array(
+                    ),
+                    'defaults' => array(
+                        'controller' => 'RssExtend\Controller\Youtube',
                         'action' => 'index',
                     ),
                 )
@@ -117,7 +123,8 @@ return array(
         'invokables' => array(
             'RssExtend\Controller\Index' => 'RssExtend\Controller\IndexController',
             'RssExtend\Controller\Feed' => 'RssExtend\Controller\FeedController',
-            'RssExtend\Controller\Image' => 'RssExtend\Controller\ImageController'
+            'RssExtend\Controller\Image' => 'RssExtend\Controller\ImageController',
+            'RssExtend\Controller\Youtube' => 'RssExtend\Controller\YoutubeController',
         ),
     ),
     'view_manager' => array(

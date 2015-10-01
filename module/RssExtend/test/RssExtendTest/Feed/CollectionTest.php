@@ -22,6 +22,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
         $collection = new Collection();
         $collection->setCache($cache = $this->getMock('\Zend\Cache\Storage\Adapter\Filesystem'));
+        $collection->setServiceLocator($this->getMock('\Zend\ServiceManager\ServiceLocatorInterface'));
         $collection->fillByConfig($config);
 
         $this->assertEquals(2, $collection->count());
@@ -38,7 +39,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $config = new Config(__DIR__ . '/testData');
 
-        $collection = new Collection($config);
+        $collection = new Collection();
+        $collection->setServiceLocator($this->getMock('\Zend\ServiceManager\ServiceLocatorInterface'));
+        $collection->fillByConfig($config);
 
         $feed1 = $collection->getById('feed1');
         $this->assertNotNull($feed1);
