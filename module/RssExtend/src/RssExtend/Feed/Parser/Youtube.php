@@ -38,6 +38,26 @@ class Youtube extends AbstractParser implements ServiceLocatorAwareInterface
     }
 
     /**
+     * @return string
+     */
+    public function getVideoFormat()
+    {
+        $videoFormat = 'webm';
+        if ($this->config->format == 'mp4') {
+            $videoFormat = 'mp4';
+        }
+        return $videoFormat;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAudioOnly()
+    {
+        return $this->config->audioOnly === 'true';
+    }
+
+    /**
      * (non-PHPdoc)
      * @see RssExtend_Worker_Abstract::_getContent()
      */
@@ -52,20 +72,20 @@ class Youtube extends AbstractParser implements ServiceLocatorAwareInterface
             $keepLocalEpisodes = (int)$this->config->keepLocalEpisodes;
         }
 
+
         $hours = $minutes = $seconds = null;
-        sscanf($youtube->getDuration($url) , "%d:%d:%d", $hours, $minutes, $seconds);
+        sscanf($youtube->getDuration($url), "%d:%d:%d", $hours, $minutes, $seconds);
         $durationSeconds = $seconds !== null ? $hours * 3600 + $minutes * 60 + $seconds : $hours * 60 + $minutes;
 
         $entry->setItunesDuration($durationSeconds);
         $entry->setEnclosure(array(
             'uri' => $this->url($entry),
-            'type' => 'audio/aac',
+            'type' => $this->getAudioOnly() ? 'audio/aac' : 'video/' . $this->getVideoFormat(),
             'length' => 1));
 
         if ($index < $keepLocalEpisodes) {
-            $audioOnly = $this->config->audioOnly === 'true' ? '1' : '0';
             $tmpFile = $youtube->getCacheFilePath($this->hash($url));
-            $youtube->download($url, $tmpFile, $audioOnly);
+            $youtube->download($url, $tmpFile, $this->getAudioOnly(), $this->getVideoFormat());
         }
 
         $duration = '(' . $youtube->getDuration($url) . ') ';
@@ -104,8 +124,9 @@ class Youtube extends AbstractParser implements ServiceLocatorAwareInterface
     public function url($entry)
     {
         $url = $this->getUrl($entry);
-        $audioOnly = $this->config->audioOnly === 'true' ? '1' : '0';
+        $audioOnly = $this->getAudioOnly() ? '1' : '0';
+        $format = $this->getVideoFormat();
         $host = $this->getServiceLocator()->get('RssExtend\Host')->getDomainWithProtocol();
-        return $host . '/youtube/' . urlencode(base64_encode($url)) . '/' . $this->hash($url) . '/' . $audioOnly;
+        return $host . '/youtube/' . urlencode(base64_encode($url)) . '/' . $this->hash($url) . '/' . $audioOnly . '/' . $format;
     }
 }

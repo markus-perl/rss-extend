@@ -1,23 +1,31 @@
 #!/usr/bin/env php
 <?php
 chdir(dirname(__DIR__));
-ini_set('max_execution_time', 300);
+ini_set('max_execution_time', 1200);
 
 require 'init_autoloader.php';
 $application = Zend\Mvc\Application::init(require 'config/application.config.php');
 
+/* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
+$cache = $application->getServiceManager()->get('Zend\Cache\Storage\Adapter\Filesystem');
+
+if ($cache->getItem('background-updater') && posix_getpgid($cache->getItem('background-updater')) !== false) {
+    echo 'Background Updater already running' . PHP_EOL;
+    exit(1);
+}
+
+$cache->clearExpired();
+
 $youtube = $application->getServiceManager()->get('RssExtend\Youtube');
 $youtube->clearExpired();
+
+$cache->setItem('background-updater', getmypid());
 
 $collection = $application->getServiceManager()->get('RssExtend\Feed\Collection');
 
 foreach ($collection as $feed) {
 
     echo 'Updating Feed ' . $feed->getId();
-
-    /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
-    $cache = $application->getServiceManager()->get('Zend\Cache\Storage\Adapter\Filesystem');
-    $cache->clearExpired();
 
     $downloader = $feed->getParser()->getDownloader();
     $downloader->setCache($cache);
@@ -31,6 +39,5 @@ foreach ($collection as $feed) {
     }
 }
 
-
-
+$cache->removeItem('background-updater');
 exit(0);

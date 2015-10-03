@@ -39,7 +39,8 @@ class YoutubeController extends AbstractActionController
     {
 
         $audioOnly = $this->params('audioOnly') == 1;
-        $extension = $audioOnly ? 'm4a' : 'webm';
+        $format = $this->params('format') == 'mp4' ? 'mp4' : 'webm';
+        $extension = $audioOnly ? 'm4a' : $format;
         $url = base64_decode($this->params()->fromRoute('url'));
         $hash = $this->params()->fromRoute('hash');
         $expectedHash = md5($url . gethostname() . 'RssExtend');
@@ -51,7 +52,7 @@ class YoutubeController extends AbstractActionController
 
             $tmpFile = $youtube->getCacheFilePath($hash);
 
-            $youtube->download($url, $tmpFile, $audioOnly);
+            $youtube->download($url, $tmpFile, $audioOnly, $format);
 
             if (file_exists($tmpFile)) {
                 set_time_limit(600);

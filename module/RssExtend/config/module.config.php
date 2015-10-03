@@ -54,7 +54,7 @@ return array(
             'youtube' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/youtube[/:url][/:hash][/:audioOnly]',
+                    'route' => '/youtube[/:url][/:hash][/:audioOnly][/:format]',
                     'constraints' => array(
                     ),
                     'defaults' => array(

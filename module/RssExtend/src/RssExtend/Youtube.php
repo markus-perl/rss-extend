@@ -93,7 +93,7 @@ class Youtube
         return $cacheFile;
     }
 
-    public function download($url, $target, $audioOnly)
+    public function download($url, $target, $audioOnly, $videoFormat = 'webm')
     {
         if (!file_exists($target)) {
 
@@ -116,9 +116,20 @@ class Youtube
                 $this->execute($cmd);
                 copy($tmpAac, $target);
             } else {
-                $cmd = $cmdBase . ' -f 43 ';
+
+                if ($videoFormat == 'webm') {
+                    $cmd = $cmdBase . ' -f 43 ';
+                } elseif($videoFormat = 'mp4') {
+                    $cmd = $cmdBase . ' -f 22 ';
+                }
+
                 $this->execute($cmd);
-                copy($tmpWebm, $target);
+
+                if ($videoFormat == 'webm') {
+                    copy($tmpWebm, $target);
+                } elseif($videoFormat = 'mp4') {
+                    copy($tmpMp4, $target);
+                }
             }
 
             foreach ($files as $file) {
