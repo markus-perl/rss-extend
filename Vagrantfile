@@ -2,7 +2,7 @@ Vagrant.configure("2") do |config|
 
     # Every Vagrant virtual environment requires a box to build off of.
     config.vm.box = "mex_v6"
-    config.vm.box_url = "https://dl.dropboxusercontent.com/u/32252351/mex_v6.box"
+    config.vm.box_url = "http://static.gender-api.com/debian-8-jessie-x64-slim.box"
 
     config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", "512"]

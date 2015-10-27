@@ -76,19 +76,22 @@ class ImageController extends AbstractActionController
                         header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (86400 * 30)) . ' GMT');
 
                         $thumbnail = imagecreatetruecolor($width, $height);
-                        imagecopyresampled($thumbnail, $origImage, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight);
-                        $quality = 50;
-                        if ($width < 500) {
-                            $quality = 70;
+
+                        if ($thumbnail) {
+                            imagecopyresampled($thumbnail, $origImage, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight);
+                            $quality = 50;
+                            if ($width < 500) {
+                                $quality = 70;
+                            }
+                            if ($width <= 300) {
+                                $quality = 80;
+                            }
+                            ob_start();
+                            imagejpeg($thumbnail, null, $quality);
+                            header("Content-Length: " . ob_get_length());
+                            ob_end_flush();
+                            $delivered = true;
                         }
-                        if ($width <= 300) {
-                            $quality = 80;
-                        }
-                        ob_start();
-                        imagejpeg($thumbnail, null, $quality);
-                        header("Content-Length: " . ob_get_length());
-                        ob_end_flush();
-                        $delivered = true;
                     }
                 }
             }
