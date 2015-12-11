@@ -59,9 +59,9 @@ class ImageController extends AbstractActionController
                     $size = getimagesizefromstring($image);
                     $origWidth = $size[0];
                     $origHeight = $size[1];
-                    $width = min($origWidth, $width);
+                    $width = max(min($origWidth, $width), 1);
                     $ratio = $origWidth / $origHeight;
-                    $height = round($width / $ratio);
+                    $height = max(round($width / $ratio), 1);
 
                     $origImage = null;
                     // 2000 * 2000 px max to prevent memory leaks
