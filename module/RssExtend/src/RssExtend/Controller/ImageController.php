@@ -43,7 +43,7 @@ class ImageController extends AbstractActionController
         $downloader->setSleep(50000, 500000);
         $downloader->setMaxDownloadSize(10);
 
-        $url = utf8_decode($url);
+     //   $url = utf8_decode($url);
         header('X-URL: ' . $url);
 
         try {
