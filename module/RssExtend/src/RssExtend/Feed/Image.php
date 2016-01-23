@@ -4,7 +4,7 @@ namespace RssExtend\Feed;
 class Image
 {
 
-    function hash($url)
+    public function hash($url)
     {
         return md5($url . gethostname() . 'RssExtend');
     }

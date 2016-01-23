@@ -27,9 +27,10 @@ class RemoveAttribs extends AbstractPostProcessor
                 $attribsToRemove = array();
                 foreach ($element->attributes as $attrName => $attrNode) {
                     if (false == in_array($attrName, array(
-                                                          'src',
-                                                          'href'
-                                                     ))
+                            'src',
+                            'href',
+                            'alt',
+                        ))
                     ) {
                         $attribsToRemove[] = $attrName;
                     }

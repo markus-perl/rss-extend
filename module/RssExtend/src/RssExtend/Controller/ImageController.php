@@ -29,10 +29,11 @@ class ImageController extends AbstractActionController
     {
         $width = 800;
         $delivered = false;
+        $image = new Feed\Image();
 
         $url = base64_decode($this->params()->fromRoute('url'));
         $hash = substr($this->params()->fromRoute('hash'), 0, -4);
-        $expectedHash = md5($url . gethostname() . 'RssExtend');
+        $expectedHash = $image->hash($url);
 
         /* @var \Zend\Cache\Storage\Adapter\Filesystem $cache */
         $cache = $this->getServiceLocator()->get('Zend\Cache\Storage\Adapter\Filesystem');
@@ -88,6 +89,7 @@ class ImageController extends AbstractActionController
                             }
                             ob_start();
                             imagejpeg($thumbnail, null, $quality);
+                            header('Content-Type: image/jpeg');
                             header("Content-Length: " . ob_get_length());
                             ob_end_flush();
                             $delivered = true;
