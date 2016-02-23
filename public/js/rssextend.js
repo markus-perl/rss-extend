@@ -16,11 +16,11 @@ $(document).ready(function() {
                 if (typeof callback == 'function') { callback.call(this); }
             });
         });
-    }
+    };
 
     $('a.show-feeds').click(function() {
         console.log($('.jumbotron.white'));
         $('body').scrollTo('.jumbotron.white');
         return false;
     });
-})
+});

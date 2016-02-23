@@ -19,10 +19,16 @@ class Dom extends AbstractParser
             $html = $this->getDownloader()->download($url);
         }
 
-        $noContent = 'no content found';
-
         if (!$html) {
-            return $noContent;
+            return 'No content found. HTML download failed.';
+        }
+
+        if ($this->config->removeScriptTags) {
+            $html = preg_replace('/' .
+                preg_quote('<script', '/') .
+                '[\s\S]+?' .
+                preg_quote('/script>', '/') .
+                '/', '', $html);
         }
 
         $dom = new \RssExtend\Dom\Query();
@@ -37,7 +43,7 @@ class Dom extends AbstractParser
             if (isset($body[0])) {
                 $dom->loadHtmlFragment($body[0]);
             } else {
-                return $noContent;
+                return 'No content found. HTML fragment loading failed';
             }
         }
 
@@ -51,7 +57,7 @@ class Dom extends AbstractParser
         }
 
         if ($content == '') {
-            $content = $noContent;
+            $content = 'No content found. Content empty. Selector: ' . $this->config->content;
         }
 
         return $content;
@@ -64,7 +70,6 @@ class Dom extends AbstractParser
     {
 
         if (isset($this->config->image)) {
-
 
             $url = $this->getUrl($entry);
             $html = $this->getDownloader()->download($url);
@@ -101,4 +106,5 @@ class Dom extends AbstractParser
 
         return null;
     }
+
 }
