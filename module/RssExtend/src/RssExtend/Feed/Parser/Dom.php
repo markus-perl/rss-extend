@@ -23,13 +23,7 @@ class Dom extends AbstractParser
             return 'No content found. HTML download failed.';
         }
 
-        if ($this->config->removeScriptTags) {
-            $html = preg_replace('/' .
-                preg_quote('<script', '/') .
-                '[\s\S]+?' .
-                preg_quote('/script>', '/') .
-                '/', '', $html);
-        }
+        $html = $this->removeScriptTag($html);
 
         $dom = new \RssExtend\Dom\Query();
         $dom->setDocument($html, 'utf-8');
@@ -74,6 +68,8 @@ class Dom extends AbstractParser
             $url = $this->getUrl($entry);
             $html = $this->getDownloader()->download($url);
 
+            $html = $this->removeScriptTag($html);
+
             $dom = new \RssExtend\Dom\Query();
             $dom->setDocument($html, 'utf-8');
 
@@ -105,6 +101,18 @@ class Dom extends AbstractParser
         }
 
         return null;
+    }
+
+    protected function removeScriptTag($html)
+    {
+        if ($this->config->removeScriptTags) {
+            $html = preg_replace('/' .
+                preg_quote('<script', '/') .
+                '[\s\S]+?' .
+                preg_quote('/script>', '/') .
+                '/', '', $html);
+        }
+        return $html;
     }
 
 }
