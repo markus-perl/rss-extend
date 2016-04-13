@@ -37,18 +37,19 @@ class ReadabilityInline extends AbstractPostProcessor
                 $readabilityUrl = 'http://www.readability.com/api/content/v1/parser?url=' . $url . '&token=' . $token;
                 $json = json_decode($this->feed->getParser()->getDownloader()->download($readabilityUrl));
 
-                if ($json && isset($json->content)) {
+                if ($json && isset($json->content, $json->title)) {
 
-                    $removeAttribs = new RemoveAttribs(null, $this->feed);
+                    $removeAttribs = new RemoveAttribs($this->config, $this->feed);
                     $content = $removeAttribs->remove($json->content);
+                    $content = strip_tags($content, '<p><br><a><img>');
 
                     $id = substr($href, 0, 30);
                     if (strlen($id) < strlen($href)) {
                         $id .= '...';
                     }
 
-                    $start = '<br />============================<br />INLINE CONTENT ' . $href . '<br />';
-                    $end = '<br />============================';
+                    $start = '<br /><hr /><div style="text-align: center;">INLINE CONTENT: ' . $json->title . '</div><br />';
+                    $end = '<br /><hr />';
 
                     $inlineContent .= $start . $content . $end;
 

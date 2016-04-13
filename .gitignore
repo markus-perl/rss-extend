@@ -14,3 +14,4 @@ zfcache-*
 *.tar.gz
 tmp/*
 .vagrant/
+.hasNfs
