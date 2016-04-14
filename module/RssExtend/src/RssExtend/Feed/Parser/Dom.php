@@ -78,7 +78,7 @@ class Dom extends AbstractParser
             if (count($results)) {
 
                 $imageUrl = null;
-                foreach (array('src', 'data-cfsrc') as $attribute) {
+                foreach (array('data-lazy-src', 'data-original', 'src', 'data-cfsrc') as $attribute) {
                     $imageUrl = $results->current()->getAttribute($attribute);
 
                     if ($imageUrl) {

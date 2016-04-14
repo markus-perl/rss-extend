@@ -54,7 +54,6 @@ class ReadabilityInline extends AbstractPostProcessor
                     $inlineContent .= $start . $content . $end;
 
                     $marker = $domDocument->createElement('span', '(Inline Content ' . $id . ')');
-
                     $element->parentNode->insertBefore($marker, $element->nextSibling);
                     $element->parentNode->insertBefore(new \DOMText (' '), $element->nextSibling);
                 }
