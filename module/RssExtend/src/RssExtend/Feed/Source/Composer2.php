@@ -184,18 +184,31 @@ class Composer2 extends AbstractSource
 
                 $domNode = new \RssExtend\Dom\Query();
                 $domNode->loadHtmlFragment($node);
-                $domHref = $domNode->execute($content->a);
                 $link = null;
-                if (!$domHref->current()) {
-                    continue;
+
+                if ($content->a) {
+                    $domHref = $domNode->execute($content->a);
+                    if (!$domHref->current()) {
+                        continue;
+                    }
+                    if ($domHref->current()->hasAttribute('data-src')) {
+                        $link = strip_tags($domHref->current()->getAttribute('data-src'));
+                    } elseif ($domHref->current()->hasAttribute('src')) {
+                        $link = strip_tags($domHref->current()->getAttribute('src'));
+                    } else {
+                        $link = strip_tags($domHref->current()->getAttribute('href'));
+                    }
                 }
-                $link = strip_tags($domHref->current()->getAttribute('href'));
 
                 $title = 'placeholder';
 
                 if ($content->title) {
                     $domTitle = $domNode->execute($content->title);
-                    $title = strip_tags($domNode->getInnerHtml($domTitle->current()));
+                    $titles = array();
+                    foreach ($domTitle as $currentTitle) {
+                        $titles[] = strip_tags($domNode->getInnerHtml($currentTitle));
+                    }
+                    $title = implode(', ', $titles);
                 }
 
                 $description = 'placeholder';
@@ -209,6 +222,12 @@ class Composer2 extends AbstractSource
                 }
 
                 $alreadyInList = false;
+                foreach ($items as $item) {
+                    if ($item['l'] == $link || $item['t'] == $title) {
+                        $alreadyInList = true;
+                        break 1;
+                    }
+                }
 
                 if (!$alreadyInList) {
                     array_unshift($items, $new = array(
