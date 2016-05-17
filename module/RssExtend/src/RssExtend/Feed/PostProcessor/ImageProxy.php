@@ -2,7 +2,7 @@
 namespace RssExtend\Feed\PostProcessor;
 
 use RssExtend\Feed\Image;
-use \Zend\Feed\Writer\Entry;
+use Zend\Feed\Writer\Entry;
 
 class ImageProxy extends AbstractPostProcessor
 {
@@ -53,8 +53,17 @@ class ImageProxy extends AbstractPostProcessor
      */
     public function process(Entry $entry)
     {
-        $entry->setContent($this->replaceSource($entry->getContent(), $entry));
-        $entry->setDescription($this->replaceSource($entry->getDescription(), $entry));
+        $content = $this->replaceSource($entry->getContent(), $entry);
+
+        if ($content) {
+            $entry->setContent($content);
+        }
+
+        $description = $this->replaceSource($entry->getDescription(), $entry);
+
+        if ($description) {
+            $entry->setDescription($description);
+        }
 
         if ($entry->getMediaThumbnail()) {
             $thumb = $entry->getMediaThumbnail();

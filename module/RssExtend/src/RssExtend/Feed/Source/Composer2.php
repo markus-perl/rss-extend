@@ -248,7 +248,7 @@ class Composer2 extends AbstractSource
 
     public function isConfigAvailable()
     {
-        if ($this->getFeed()->getComposerConfig()) {
+        if ($this->getFeed()->getComposerConfig() && $this->getFeed()->getComposerConfig()->version == 2) {
             return true;
         }
         return false;
