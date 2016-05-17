@@ -124,6 +124,7 @@ abstract class AbstractParser
     public function fetchFeed()
     {
         $parsers = array(
+            new Source\Composer2(),
             new Source\Composer(),
             new Source\Rss()
         );

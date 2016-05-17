@@ -22,6 +22,11 @@ class Feed implements ServiceLocatorAwareInterface
     /**
      * @var \Zend\Config\Config
      */
+    private $postProcessFeed;
+
+    /**
+     * @var \Zend\Config\Config
+     */
     private $preProcess;
 
     /**
@@ -289,6 +294,10 @@ class Feed implements ServiceLocatorAwareInterface
             $feed->orderByDate();
         }
 
+        foreach ($this->getPostProcessorsFeed() as $postProcessor) {
+            $feed = $postProcessor->process($feed);
+        }
+
         $feed->rewind();
 
         return $feed;
@@ -378,6 +387,10 @@ class Feed implements ServiceLocatorAwareInterface
             $this->setPostProcess($config->postProcess);
         }
 
+        if ($config->postProcessFeed) {
+            $this->setPostProcessFeed($config->postProcessFeed);
+        }
+
         if ($config->preProcess) {
             $this->setPreProcess($config->preProcess);
         }
@@ -389,7 +402,6 @@ class Feed implements ServiceLocatorAwareInterface
         $method = $config->method;
         $this->setMethod($method, $config->$method);
     }
-
 
     /**
      * @param \Zend\Config\Config $postProcess
@@ -405,6 +417,22 @@ class Feed implements ServiceLocatorAwareInterface
     public function getPostProcess()
     {
         return $this->postProcess;
+    }
+
+    /**
+     * @param \Zend\Config\Config $postProcess
+     */
+    public function setPostProcessFeed(\Zend\Config\Config $postProcess)
+    {
+        $this->postProcessFeed = $postProcess;
+    }
+
+    /**
+     * @return \Zend\Config\Config
+     */
+    public function getPostProcessFeed()
+    {
+        return $this->postProcessFeed;
     }
 
     /**
@@ -436,6 +464,30 @@ class Feed implements ServiceLocatorAwareInterface
         $postProcessors = array();
         foreach ($this->getPostProcess() as $name => $config) {
             $postProcessorName = 'RssExtend\\Feed\\PostProcessor\\' . ucfirst($name);
+
+            if (false == class_exists($postProcessorName)) {
+                throw new Exception\RuntimeException('invalid post processor specified');
+            }
+
+            $postProcessors[] = new $postProcessorName($config, $this);
+        }
+
+        return $postProcessors;
+    }
+
+    /**
+     * @return array[]AbstractPostProcessor
+     * @throws Exception\RuntimeException
+     */
+    public function getPostProcessorsFeed()
+    {
+        if (null === $this->getPostProcessFeed()) {
+            return array();
+        }
+
+        $postProcessors = array();
+        foreach ($this->getPostProcessFeed() as $name => $config) {
+            $postProcessorName = 'RssExtend\\Feed\\PostProcessorFeed\\' . ucfirst($name);
 
             if (false == class_exists($postProcessorName)) {
                 throw new Exception\RuntimeException('invalid post processor specified');
