@@ -22,11 +22,6 @@ class Pushover extends AbstractPostProcessor
         $cacheKey = $this->feed->getId() . '_po4';
         $hash = crc32($text);
         $cacheEntry = unserialize($this->feed->getCache()->getItem($cacheKey));
-        $updateCache = false;
-
-        if (!$cacheEntry) {
-            $updateCache = true;
-        }
 
         if ($cacheEntry && $cacheEntry['h'] != $hash) {
 
@@ -45,15 +40,11 @@ class Pushover extends AbstractPostProcessor
                 $notification[] = $line;
             }
 
-
             $this->send($this->feed->getName(), $notification);
 
-            $updateCache = true;
         }
 
-        if ($updateCache) {
-            $this->feed->getCache()->setItem($cacheKey, serialize(array('h' => $hash, 'm' => $message)));
-        }
+        $this->feed->getCache()->setItem($cacheKey, serialize(array('h' => $hash, 'm' => $message)));
 
         return $feed;
     }

@@ -99,7 +99,7 @@ class Module
 
                     $options = new FilesystemOptions();
                     $options->setCacheDir($sm->get('Config')['cacheDir']);
-                    $options->setTtl(86400);
+                    $options->setTtl(86400 * 3);
 
                     $cache = StorageFactory::adapterFactory('filesystem', $options);
                     $plugin = StorageFactory::pluginFactory('exception_handler', array(
