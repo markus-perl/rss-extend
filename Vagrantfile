@@ -13,6 +13,8 @@ Vagrant.configure("2") do |config|
     config.vm.network :private_network, ip: "33.33.33.10"
     config.vm.synced_folder ".", "/vagrant", :nfs => true
 
+    config.ssh.insert_key=false
+
 	#Forward a port from the guest to the host, which allows for outside computers to access the VM, whereas host only networking does not.
     config.vm.network :forwarded_port, guest: 80, host: 8080        #nginx
 

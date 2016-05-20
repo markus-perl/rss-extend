@@ -175,6 +175,7 @@ class Composer2 extends AbstractSource
 
             $content = $part->content;
             $container = $part->content->container;
+            $duplicateCheck = $part->content->duplicateCheck;
 
             $results = $dom->execute(trim($container));
 
@@ -223,7 +224,13 @@ class Composer2 extends AbstractSource
 
                 $alreadyInList = false;
                 foreach ($items as $item) {
-                    if ($item['l'] == $link || $item['t'] == $title) {
+
+                    if (!$duplicateCheck || mb_substr_count($duplicateCheck, 'link') && $item['l'] == $link) {
+                        $alreadyInList = true;
+                        break 1;
+                    }
+
+                    if (!$duplicateCheck || mb_substr_count($duplicateCheck, 'title') && $item['t'] == $title) {
                         $alreadyInList = true;
                         break 1;
                     }
