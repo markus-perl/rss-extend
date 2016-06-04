@@ -1,7 +1,7 @@
 node default {
   include apt
   include bash
-  include php7
+  include php
   include nginx
   include composer
   include zf2
